@@ -1,0 +1,26 @@
+---
+const items = ['Claude Code', 'Herdr', 'tmux', 'Tailscale', 'ntfy', 'Android', 'Linux', 'macOS'];
+const row = [...items, ...items];
+---
+
+<section class="marquee" aria-label="Funciona con">
+  <ul class="track mono">
+    {row.map((item, i) => <li aria-hidden={i >= items.length ? 'true' : undefined}>{item}</li>)}
+  </ul>
+</section>
+
+<style>
+  .marquee { position: relative; border-block: 1px solid #1c1c24; overflow: hidden; padding-block: 18px; }
+  .track {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 48px;
+    width: max-content;
+    color: var(--dim);
+    font-size: 15px;
+    animation: om-marquee 26s linear infinite;
+  }
+  li::after { content: '·'; margin-left: 48px; }
+</style>

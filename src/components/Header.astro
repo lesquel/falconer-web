@@ -1,0 +1,45 @@
+---
+---
+
+<header class="wrap header">
+  <a href="/" class="brand" aria-label="OpenMosh, inicio">
+    <img src="/favicon.svg" width="30" height="30" alt="" />
+    openmosh
+  </a>
+  <nav aria-label="Principal">
+    <a href="#funciones">Funciones</a>
+    <a href="#seguridad">Seguridad</a>
+    <a href="#instalar" class="cta">Instalar</a>
+  </nav>
+</header>
+
+<style>
+  .header {
+    position: relative;
+    padding-block: 22px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 18px;
+    text-decoration: none;
+  }
+  .brand img { border-radius: 8px; }
+  nav { display: flex; flex-wrap: wrap; gap: 22px; align-items: center; font-size: 15px; }
+  nav a { color: var(--muted); text-decoration: none; }
+  nav a:hover { color: var(--fg); }
+  nav .cta {
+    color: var(--bg);
+    background: var(--fg);
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-weight: 700;
+  }
+</style>

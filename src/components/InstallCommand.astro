@@ -1,0 +1,30 @@
+---
+/** One-line installer with a copy button (scripts/copy.ts). */
+const command = 'curl -fsSL https://raw.githubusercontent.com/lesquel/openmosh-hook/main/install.sh | sh';
+---
+
+<button type="button" class="install mono" data-copy={command} aria-label="Copiar el comando de instalación">
+  <code><span aria-hidden="true">$</span> {command}</code>
+  <span class="state" data-copy-state>copiar</span>
+</button>
+
+<style>
+  .install {
+    max-width: 100%;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    font-size: 15px;
+    color: var(--fg);
+    background: var(--raised);
+    border: 1px solid var(--line-strong);
+    padding: 15px 18px;
+    border-radius: 14px;
+    cursor: pointer;
+    text-align: left;
+  }
+  code { overflow-x: auto; white-space: nowrap; min-width: 0; font: inherit; }
+  code span { color: var(--accent); }
+  .state { color: var(--muted); font-size: 13px; flex: none; }
+  .install:hover { border-color: var(--accent); }
+</style>

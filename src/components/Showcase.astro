@@ -1,0 +1,93 @@
+---
+import Mole from './Mole.astro';
+---
+
+<section class="wrap showcase" aria-label="Así se ve en el teléfono">
+  <div class="stage">
+    <div class="phone" data-tilt>
+      <span class="hello">Buenas noches</span>
+      <span class="headline">Todo en orden,<br />menos <em>api</em>.</span>
+      <div class="log mono">
+        <span class="typing">⏺ Bash(pnpm test --filter api)</span><span class="caret">▍</span>
+      </div>
+      <div class="approve">
+        <span>Aprobar<br /><small>api · claude</small></span>
+        <span class="check" aria-hidden="true">✓</span>
+      </div>
+      <div class="dock" aria-hidden="true"><span class="on"></span><span></span><span></span><span></span></div>
+    </div>
+    <div class="mole"><Mole watch size={190} label="El Topo te mira" /></div>
+  </div>
+</section>
+
+<style>
+  .showcase { position: relative; padding-block: 32px 72px; display: flex; justify-content: center; }
+  .stage { position: relative; perspective: 1200px; }
+  .phone {
+    width: 320px;
+    max-width: 82vw;
+    height: 600px;
+    border-radius: 52px;
+    background: #0a0a0d;
+    border: 1px solid var(--line-strong);
+    box-shadow: 0 40px 120px color-mix(in srgb, var(--accent) 25%, transparent);
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform 120ms linear;
+  }
+  .hello { font-size: 13px; color: var(--muted); }
+  .headline { font-size: 30px; font-weight: 800; line-height: 1.02; letter-spacing: -0.03em; }
+  .headline em { font-style: normal; color: var(--accent); }
+  .log {
+    background: var(--raised);
+    border: 1px solid var(--line-strong);
+    border-radius: 22px;
+    padding: 14px;
+    font-size: 12px;
+    color: #d4d4d8;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .typing {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    animation: om-type 2.4s steps(27) infinite alternate;
+  }
+  .caret { animation: om-blink 1s infinite; }
+  .approve {
+    margin-top: auto;
+    background: var(--accent);
+    color: var(--bg);
+    border-radius: 28px;
+    padding: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-weight: 800;
+    font-size: 20px;
+    line-height: 1.05;
+    animation: om-pop 4s ease-in-out infinite;
+  }
+  .approve small { font-size: 13px; font-weight: 600; }
+  .check {
+    width: 52px;
+    height: 52px;
+    border-radius: 26px;
+    background: var(--bg);
+    color: var(--accent);
+    display: grid;
+    place-items: center;
+    font-size: 22px;
+  }
+  .dock { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .dock span { height: 48px; border-radius: 18px; background: var(--raised); }
+  .dock .on { background: var(--fg); }
+  .mole { position: absolute; left: -150px; bottom: -10px; animation: om-float 5s ease-in-out infinite; }
+  @media (max-width: 640px) {
+    .mole { left: -40px; bottom: -40px; transform: scale(0.7); }
+  }
+</style>

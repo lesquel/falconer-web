@@ -1,0 +1,55 @@
+---
+import InstallCommand from './InstallCommand.astro';
+---
+
+<section class="wrap hero">
+  <span class="badge mono">● nuevo · la PC te sigue cuando cambiás de tab</span>
+  <h1>Tus agentes.<br /><span>Tu bolsillo.</span></h1>
+  <p>
+    La terminal móvil para tus agentes de IA. Te avisa cuando uno te necesita y aprobás en un
+    toque. Gratis, abierta y en tu propia máquina.
+  </p>
+  <div class="actions" id="instalar">
+    <InstallCommand />
+    <a href="#funciones" class="primary">Ver cómo funciona</a>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    padding-block: 48px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 22px;
+  }
+  .badge {
+    font-size: 13px;
+    border: 1px solid var(--line-strong);
+    background: color-mix(in srgb, var(--raised) 80%, transparent);
+    padding: 7px 14px;
+    border-radius: 999px;
+    color: var(--accent-soft);
+  }
+  h1 {
+    margin: 0;
+    font-weight: 900;
+    font-size: clamp(52px, 8.5vw, 128px);
+    line-height: 0.92;
+    letter-spacing: -0.055em;
+    text-wrap: balance;
+  }
+  h1 span { color: var(--dim); }
+  p { margin: 0; max-width: 620px; font-size: 20px; color: var(--muted); }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center; max-width: 100%; }
+  .primary {
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 800;
+    padding: 16px 22px;
+    border-radius: 14px;
+    text-decoration: none;
+  }
+</style>

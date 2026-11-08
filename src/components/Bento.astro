@@ -1,0 +1,87 @@
+---
+const accents = [
+  { name: 'Azul', hex: '#6b93ff' },
+  { name: 'Verde', hex: '#4ade9e' },
+  { name: 'Violeta', hex: '#b69cff' },
+  { name: 'Ámbar', hex: '#ffc24d' },
+];
+---
+
+<section class="wrap bento" id="funciones">
+  <article class="tile wide">
+    <h2>La computadora te sigue</h2>
+    <p>Cambiás de tab en Herdr desde el teléfono y la PC se mueve con vos.</p>
+    <div class="tabs" role="group" aria-label="Probá cambiar de tab" data-tabs>
+      <button type="button" class="mono" aria-pressed="true" data-tab="1">tab 1</button>
+      <button type="button" class="mono" aria-pressed="false" data-tab="2">tab 2</button>
+      <button type="button" class="mono" aria-pressed="false" data-tab="3">tab 3</button>
+      <span class="mono follow" aria-live="polite">→ PC en tab <b data-tab-echo>1</b></span>
+    </div>
+  </article>
+
+  <article class="tile">
+    <h2>Fotos que Claude ve</h2>
+    <p>Llegan como <span class="mono chip">[Image #1]</span>, no como una ruta.</p>
+  </article>
+
+  <article class="tile">
+    <h2>Tu color</h2>
+    <div class="swatches" role="group" aria-label="Elegí un acento" data-accents>
+      {accents.map((a, i) => (
+        <button type="button" aria-label={a.name} aria-pressed={i === 0 ? 'true' : 'false'} data-accent={a.hex} style={`background:${a.hex}`}></button>
+      ))}
+    </div>
+    <p>Blanco y negro, con el acento que elijas. Probalo: cambia toda la página.</p>
+  </article>
+
+  <article class="tile wide security" id="seguridad">
+    <h2>Nadie más entra.</h2>
+    <p class="mono checks">
+      [ok] solo tu tailnet<br />[ok] huella en cada conexión<br />[ok] cifrado de punta a punta<br />[ok] 0 puertos abiertos
+    </p>
+  </article>
+</section>
+
+<style>
+  .bento {
+    position: relative;
+    padding-block: 80px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+  }
+  .tile {
+    min-width: 0;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .wide { grid-column: span 2; }
+  @media (max-width: 640px) { .wide { grid-column: auto; } }
+  h2 { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.03em; }
+  p { margin: 0; color: var(--muted); }
+  .chip { color: var(--accent-soft); }
+  .tabs { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .tabs button {
+    font-weight: 700;
+    padding: 10px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--line-strong);
+    background: var(--raised);
+    color: var(--fg);
+    cursor: pointer;
+    min-height: 44px;
+  }
+  .tabs button[aria-pressed='true'] { background: var(--fg); color: var(--bg); }
+  .follow { color: var(--accent); font-size: 13px; }
+  .swatches { display: flex; gap: 10px; }
+  .swatches button { width: 44px; height: 44px; border-radius: 22px; border: 3px solid transparent; cursor: pointer; }
+  .swatches button[aria-pressed='true'] { border-color: var(--fg); }
+  .security { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; }
+  .security h2 { flex: 1 1 260px; }
+  .checks { flex: 1 1 320px; line-height: 1.8; font-size: 14px; }
+</style>

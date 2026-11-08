@@ -9,7 +9,9 @@ Static output, self-hosted fonts, no analytics and no third-party requests.
 npm install
 npm run dev      # http://localhost:4321
 npm test         # unit tests for the pointer helpers (vitest)
+npm run check    # astro check (types and templates)
 npm run build    # static site in dist/
+npm run preview  # serve dist/ locally
 ```
 
 ## Structure
@@ -17,7 +19,7 @@ npm run build    # static site in dist/
 | Path | Content |
 |---|---|
 | `src/pages/index.astro` | The page: composes the sections |
-| `src/components/` | Header, Hero, InstallCommand, Showcase (phone + mole), Marquee, Bento, Footer, Mole |
+| `src/components/` | Header, Hero, InstallCommand (the hook's `install.sh` from `main`), Showcase (phone + mole), Marquee (supported agents), Bento, Footer, Mole |
 | `src/scripts/motion.ts` | Pure helpers (tilt, pupils, accent whitelist), unit-tested |
 | `src/scripts/interactions.ts` | Pointer spotlight, 3D tilt, mole eyes, copy button, tab and accent demos |
 | `src/styles/global.css` | Tokens and keyframes; animations stop with `prefers-reduced-motion` |

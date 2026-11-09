@@ -8,8 +8,8 @@ Static output, self-hosted fonts, no analytics and no third-party requests.
 ```sh
 npm install
 npm run dev      # http://localhost:4321
-npm test         # unit tests for the pointer helpers (vitest)
-npm run check    # astro check (types and templates)
+npm test         # unit tests for the pointer, accent and approve-demo helpers (vitest)
+npm run check    # astro check (needs @astrojs/check; it offers to install it on first run)
 npm run build    # static site in dist/
 npm run preview  # serve dist/ locally
 ```
@@ -18,10 +18,10 @@ npm run preview  # serve dist/ locally
 
 | Path | Content |
 |---|---|
-| `src/pages/index.astro` | The page: composes the sections |
-| `src/components/` | Header, Hero, InstallCommand (the hook's `install.sh` from `main`), Showcase (phone + mole), Marquee (supported agents), Bento, Footer, Mole |
+| `src/pages/index.astro` | The page: composes the sections in order |
+| `src/components/` | Header (nav + AccentPicker), Hero (copy + Showcase phone and mole, InstallCommand), Marquee, About, Problem, Steps (+ ApproveDemo), Bento (features), Agents, Security, Compare, Creator, OpenSource, Faq, FinalCta, Footer, Mole |
 | `src/scripts/motion.ts` | Pure helpers (tilt, pupils, accent whitelist), unit-tested |
-| `src/scripts/interactions.ts` | Pointer spotlight, 3D tilt, mole eyes, copy button, tab and accent demos |
+| `src/scripts/interactions.ts` | Pointer spotlight, 3D tilt, mole eyes, copy buttons, tab demo, remembered accent, approve demo; pure parts exported and unit-tested |
 | `src/styles/global.css` | Tokens and keyframes; animations stop with `prefers-reduced-motion` |
 
 The design is "LAN-J · Spotlight" from the OpenMosh design canvas.

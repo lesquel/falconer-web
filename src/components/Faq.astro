@@ -1,0 +1,45 @@
+---
+const faqs = [
+  ['¿Es gratis?', 'Sí. La app y el hook son gratis y de código abierto, sin suscripciones ni cuentas.'],
+  ['¿Necesito un servidor?', 'No. Solo tu computadora con el hook y Tailscale. No hay ningún servidor de OpenMosh en el medio.'],
+  ['¿Funciona con mi agente?', 'Funciona con Claude Code, Codex, Gemini CLI, Cursor, GitHub Copilot CLI, Kiro, OpenCode y Aider; con Pi vía adjuntos y con Amp para aprobaciones.'],
+  ['¿Hay versión para iPhone?', 'Por ahora solo Android.'],
+  ['¿Qué ve ntfy?', 'Solo texto cifrado: las notificaciones van cifradas de punta a punta. Si preferís, podés alojar tu propio ntfy.'],
+  ['¿Cómo desinstalo?', 'La app se desinstala como cualquier otra. En la computadora, openmosh-hook uninstall quita solo lo que el hook creó (servicio, integraciones, claves emparejadas y su configuración); con --all también borra el binario. Probá antes con --dry-run.'],
+];
+---
+
+<section class="wrap section" id="faq" aria-labelledby="faq-title">
+  <div class="section-head">
+    <span class="eyebrow">// preguntas frecuentes</span>
+    <h2 class="section-title" id="faq-title">Preguntas frecuentes</h2>
+  </div>
+  <div class="list">
+    {faqs.map(([q, a]) => (
+      <details>
+        <summary>{q}</summary>
+        <p>{a}</p>
+      </details>
+    ))}
+  </div>
+</section>
+
+<style>
+  .list { display: flex; flex-direction: column; gap: 10px; max-width: 860px; }
+  details { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; }
+  details[open] { border-color: var(--line-strong); }
+  summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 20px 24px;
+    font-weight: 700;
+    font-size: 18px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '+'; font-family: var(--font-mono); color: var(--accent); }
+  details[open] summary::after { content: '−'; }
+  details p { margin: 0; padding: 0 24px 22px; color: var(--muted); }
+</style>

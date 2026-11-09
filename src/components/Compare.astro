@@ -1,0 +1,41 @@
+---
+const rows = [
+  ['Precio', 'Gratis', 'De pago o por suscripción'],
+  ['Código', 'Abierto', 'Cerrado'],
+  ['Dónde corre', 'Tu computadora y tu tailnet', 'La nube del proveedor'],
+  ['Plataforma', 'Android primero', 'Varía'],
+  ['Agentes', 'Funciona con muchos', 'Suelen ser pocos'],
+];
+---
+
+<section class="wrap section" aria-labelledby="mejora-title">
+  <div class="section-head">
+    <span class="eyebrow">// qué mejora</span>
+    <h2 class="section-title" id="mejora-title">Lo mismo, sin pagar<br /><span>ni entregar tus datos.</span></h2>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <caption class="sr-only">OpenMosh comparado con las apps de pago</caption>
+      <thead>
+        <tr><th scope="col"><span class="sr-only">Aspecto</span></th><th scope="col" class="om">OpenMosh</th><th scope="col">Apps de pago</th></tr>
+      </thead>
+      <tbody>
+        {rows.map(([k, a, b]) => (
+          <tr><th scope="row" class="mono">{k}</th><td class="om">{a}</td><td>{b}</td></tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<style>
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; min-width: 460px; }
+  th, td { text-align: left; padding: 18px 22px; border-bottom: 1px solid var(--line); }
+  tbody tr:last-child > * { border-bottom: 0; }
+  thead th { font-size: 15px; color: var(--muted); font-weight: 700; }
+  thead th.om { color: var(--accent); }
+  tbody th { font-size: 13px; color: var(--dim); font-weight: 400; width: 28%; }
+  td { color: var(--muted); }
+  td.om { color: var(--fg); font-weight: 700; }
+</style>

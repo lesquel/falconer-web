@@ -1,53 +1,56 @@
 ---
-const accents = [
-  { name: 'Azul', hex: '#6b93ff' },
-  { name: 'Verde', hex: '#4ade9e' },
-  { name: 'Violeta', hex: '#b69cff' },
-  { name: 'Ámbar', hex: '#ffc24d' },
+const features = [
+  { title: 'Terminal SSH real', text: 'Con tmux, una barra de teclas con cruz de flechas y Enter, atajos Ctrl guardados, zoom con pellizco y pantalla completa.' },
+  { title: 'Aprobá desde el aviso', text: 'Aprobar o rechazar desde la notificación, viendo el comando real que el agente quiere correr.' },
+  { title: 'Horario por computadora', text: 'Elegí en qué horas te puede avisar cada máquina.' },
+  { title: 'Uso de tus agentes', text: 'Mirá cuánto te queda, como los límites del plan de Codex.' },
+  { title: 'Tu idioma, tu tema', text: 'Español o inglés. Claro u oscuro, con colores de acento.' },
+  { title: 'Liviana', text: 'Un APK de unos 15,5 MB.' },
+  { title: 'Cuida la batería', text: 'Las terminales inactivas no despiertan el teléfono y las conexiones se cierran tras 10 minutos en segundo plano.' },
 ];
 ---
 
-<section class="wrap bento" id="funciones">
-  <article class="tile wide">
-    <h2>La computadora te sigue</h2>
-    <p>Cambiás de tab en Herdr desde el teléfono y la PC se mueve con vos.</p>
-    <div class="tabs" role="group" aria-label="Probá cambiar de tab" data-tabs>
-      <button type="button" class="mono" aria-pressed="true" data-tab="1">tab 1</button>
-      <button type="button" class="mono" aria-pressed="false" data-tab="2">tab 2</button>
-      <button type="button" class="mono" aria-pressed="false" data-tab="3">tab 3</button>
-      <span class="mono follow" aria-live="polite">→ PC en tab <b data-tab-echo>1</b></span>
-    </div>
-  </article>
+<section class="wrap section" id="funciones" aria-labelledby="funciones-title">
+  <div class="section-head">
+    <span class="eyebrow">// qué ofrecemos · v0.2.0</span>
+    <h2 class="section-title" id="funciones-title">Todo lo que necesitás.<br /><span>Nada que no.</span></h2>
+  </div>
 
-  <article class="tile">
-    <h2>Fotos que Claude ve</h2>
-    <p>Llegan como <span class="mono chip">[Image #1]</span>, no como una ruta.</p>
-  </article>
+  <div class="bento">
+    <article class="tile wide">
+      <h3>Abrir Herdr, en un toque</h3>
+      <p>Con espejo: cambiás de tab o de workspace en el teléfono y la PC se mueve con vos.</p>
+      <div class="tabs" role="group" aria-label="Probá cambiar de tab" data-tabs>
+        <button type="button" class="mono" aria-pressed="true" data-tab="1">tab 1</button>
+        <button type="button" class="mono" aria-pressed="false" data-tab="2">tab 2</button>
+        <button type="button" class="mono" aria-pressed="false" data-tab="3">tab 3</button>
+        <span class="mono follow" aria-live="polite">→ PC en tab <b data-tab-echo>1</b></span>
+      </div>
+    </article>
 
-  <article class="tile">
-    <h2>Tu color</h2>
-    <div class="swatches" role="group" aria-label="Elegí un acento" data-accents>
-      {accents.map((a, i) => (
-        <button type="button" aria-label={a.name} aria-pressed={i === 0 ? 'true' : 'false'} data-accent={a.hex} style={`background:${a.hex}`}></button>
-      ))}
-    </div>
-    <p>Blanco y negro, con el acento que elijas. Probalo: cambia toda la página.</p>
-  </article>
+    <article class="tile">
+      <h3>Chat con adjuntos</h3>
+      <p>Mandá imágenes y archivos que cualquier agente puede leer. A Claude le llegan como <span class="mono chip">[Image #1]</span>, no como una ruta.</p>
+    </article>
 
-  <article class="tile wide security" id="seguridad">
-    <h2>Nadie más entra.</h2>
-    <p class="mono checks">
-      [ok] solo tu tailnet<br />[ok] huella en cada conexión<br />[ok] cifrado de punta a punta<br />[ok] 0 puertos abiertos
-    </p>
-  </article>
+    {features.map((f) => (
+      <article class="tile">
+        <h3>{f.title}</h3>
+        <p>{f.text}</p>
+      </article>
+    ))}
+
+    <article class="tile">
+      <h3>Tu color</h3>
+      <p>Probá el selector de <span class="mono chip">acento</span> de arriba: cambia toda la página, como en la app.</p>
+    </article>
+  </div>
 </section>
 
 <style>
   .bento {
-    position: relative;
-    padding-block: 80px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 14px;
   }
   .tile {
@@ -58,11 +61,12 @@ const accents = [
     padding: 26px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
   }
   .wide { grid-column: span 2; }
   @media (max-width: 640px) { .wide { grid-column: auto; } }
-  h2 { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.03em; }
+  h3 { margin: 0; font-size: 21px; font-weight: 800; letter-spacing: -0.02em; }
+  .wide h3 { font-size: 26px; letter-spacing: -0.03em; }
   p { margin: 0; color: var(--muted); }
   .chip { color: var(--accent-soft); }
   .tabs { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
@@ -78,10 +82,4 @@ const accents = [
   }
   .tabs button[aria-pressed='true'] { background: var(--fg); color: var(--bg); }
   .follow { color: var(--accent); font-size: 13px; }
-  .swatches { display: flex; gap: 10px; }
-  .swatches button { width: 44px; height: 44px; border-radius: 22px; border: 3px solid transparent; cursor: pointer; }
-  .swatches button[aria-pressed='true'] { border-color: var(--fg); }
-  .security { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; }
-  .security h2 { flex: 1 1 260px; }
-  .checks { flex: 1 1 320px; line-height: 1.8; font-size: 14px; }
 </style>

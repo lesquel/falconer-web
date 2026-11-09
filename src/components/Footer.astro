@@ -4,7 +4,13 @@
 <footer class="wrap footer">
   <span class="brand">openmosh</span>
   <span>Software libre. Sin analítica, sin cuentas, sin servidores de terceros.</span>
-  <a href="https://github.com/lesquel/OpenMosh">Código fuente</a>
+  <nav aria-label="Enlaces del pie">
+    <a href="https://github.com/lesquel/openmosh-app">App</a>
+    <a href="https://github.com/lesquel/openmosh-hook">Hook</a>
+    <a href="https://github.com/lesquel/openmosh-app/releases/latest">Releases</a>
+    <a href="https://github.com/lesquel">GitHub</a>
+    <a href="https://www.youtube.com/@soquel_">YouTube</a>
+  </nav>
 </footer>
 
 <style>
@@ -16,9 +22,12 @@
     flex-wrap: wrap;
     gap: 16px;
     justify-content: space-between;
+    align-items: center;
     color: var(--dim);
     font-size: 14px;
   }
   .brand { font-weight: 800; color: var(--fg); }
+  nav { display: flex; flex-wrap: wrap; gap: 16px; }
   a { color: var(--muted); }
+  a:hover { color: var(--fg); }
 </style>

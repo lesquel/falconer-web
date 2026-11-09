@@ -1,0 +1,47 @@
+---
+const items = [
+  ['sin nube', 'No hay servidor de OpenMosh en el medio. Todo pasa entre tu teléfono y tu computadora.'],
+  ['claves en el teléfono', 'Guardadas en el Android Keystore, con huella o PIN por conexión.'],
+  ['host-key pinning', 'La app fija la huella de cada computadora y avisa si cambia.'],
+  ['emparejamiento seguro', 'Solo por Tailscale, con confirmación en la PC y una clave limitada a la IP del teléfono.'],
+  ['push cifrado e2e', 'ntfy solo ve texto cifrado. Si querés, alojás tu propio ntfy.'],
+  ['bloqueo de la app', 'Bloqueo y nueva verificación, y los datos sensibles se muestran enmascarados.'],
+  ['releases firmadas', 'Firmadas con minisign y verificadas por el instalador.'],
+];
+---
+
+<section class="wrap section" id="seguridad" aria-labelledby="seguridad-title">
+  <div class="layout">
+    <div class="section-head">
+      <span class="eyebrow">// seguridad y privacidad</span>
+      <h2 class="section-title" id="seguridad-title">Nadie más entra.</h2>
+      <p class="lead">Tu terminal es tuya. Diseñada para que ni nosotros podamos ver lo que hacés.</p>
+    </div>
+    <ul class="checks">
+      {items.map(([k, v]) => (
+        <li>
+          <span class="mono ok" aria-hidden="true">[ok]</span>
+          <div><b class="mono">{k}</b><p>{v}</p></div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .layout { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 40px; align-items: start; }
+  @media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); gap: 0; } }
+  .checks {
+    list-style: none;
+    margin: 0;
+    padding: 8px 26px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  li { display: flex; gap: 14px; padding-block: 16px; border-bottom: 1px solid var(--line); }
+  li:last-child { border-bottom: 0; }
+  .ok { color: #4ade9e; font-size: 13px; padding-top: 2px; flex: none; }
+  b { font-size: 14px; }
+  p { margin: 4px 0 0; color: var(--muted); font-size: 15px; }
+</style>

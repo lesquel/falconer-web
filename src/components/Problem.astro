@@ -1,0 +1,32 @@
+<section class="wrap section" aria-labelledby="problema-title">
+  <div class="section-head">
+    <span class="eyebrow">// el problema</span>
+    <h2 class="section-title" id="problema-title">Tu agente se frena.<br /><span>Vos no estás.</span></h2>
+  </div>
+  <div class="split">
+    <article class="card before">
+      <span class="mono label">hoy</span>
+      <h3>Atado al escritorio</h3>
+      <p>
+        Claude Code, Codex y compañía corren en tu computadora y se detienen a pedir permiso, o
+        terminan, justo cuando te fuiste. O te quedás frente a la pantalla, o pagás una app cerrada
+        o un servicio en la nube.
+      </p>
+    </article>
+    <article class="card after">
+      <span class="mono label">con openmosh</span>
+      <h3>Desde el teléfono</h3>
+      <p>
+        Ves lo que pasa, aprobás y seguís desde el teléfono. En privado, con tu propia máquina, y
+        gratis.
+      </p>
+    </article>
+  </div>
+</section>
+
+<style>
+  .split { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+  .label { display: inline-block; font-size: 12px; margin-bottom: 14px; color: var(--dim); }
+  .after { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+  .after .label { color: var(--accent); }
+</style>

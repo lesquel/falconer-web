@@ -2,9 +2,18 @@
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
-import Showcase from '../components/Showcase.astro';
 import Marquee from '../components/Marquee.astro';
+import About from '../components/About.astro';
+import Problem from '../components/Problem.astro';
+import Steps from '../components/Steps.astro';
 import Bento from '../components/Bento.astro';
+import Agents from '../components/Agents.astro';
+import Security from '../components/Security.astro';
+import Compare from '../components/Compare.astro';
+import Creator from '../components/Creator.astro';
+import OpenSource from '../components/OpenSource.astro';
+import Faq from '../components/Faq.astro';
+import FinalCta from '../components/FinalCta.astro';
 import Footer from '../components/Footer.astro';
 ---
 
@@ -13,12 +22,21 @@ import Footer from '../components/Footer.astro';
   description="Terminal móvil gratis y de código abierto para tus agentes de IA: notificaciones cifradas y aprobaciones en un toque, desde tu propia máquina."
 >
   <div class="backdrop" aria-hidden="true"></div>
+  <Header />
   <main>
-    <Header />
     <Hero />
-    <Showcase />
     <Marquee />
+    <About />
+    <Problem />
+    <Steps />
     <Bento />
+    <Agents />
+    <Security />
+    <Compare />
+    <Creator />
+    <OpenSource />
+    <Faq />
+    <FinalCta />
   </main>
   <Footer />
 </Base>

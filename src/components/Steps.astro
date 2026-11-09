@@ -1,0 +1,52 @@
+---
+import InstallCommand from './InstallCommand.astro';
+import ApproveDemo from './ApproveDemo.astro';
+---
+
+<section class="wrap section" id="como-funciona" aria-labelledby="pasos-title">
+  <div class="section-head">
+    <span class="eyebrow">// cómo funciona</span>
+    <h2 class="section-title" id="pasos-title">Tres pasos.<br /><span>Ni un servidor.</span></h2>
+  </div>
+  <div class="layout">
+    <ol class="steps">
+      <li class="card">
+        <span class="num mono">01</span>
+        <div>
+          <h3>Instalá el hook</h3>
+          <p>En tu computadora, Linux o macOS:</p>
+          <div class="cmds">
+            <InstallCommand />
+            <InstallCommand command="openmosh-hook setup" label="Copiar el comando de configuración" />
+          </div>
+        </div>
+      </li>
+      <li class="card">
+        <span class="num mono">02</span>
+        <div>
+          <h3>Emparejá con un QR</h3>
+          <p>Escaneás el código con la app y la PC te pide confirmar. Solo por tu tailnet.</p>
+        </div>
+      </li>
+      <li class="card">
+        <span class="num mono">03</span>
+        <div>
+          <h3>Aprobá desde el teléfono</h3>
+          <p>Cuando un agente pide permiso, te llega el aviso con el comando real. Aprobás o rechazás ahí mismo.</p>
+        </div>
+      </li>
+    </ol>
+    <ApproveDemo />
+  </div>
+</section>
+
+<style>
+  .layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 20px; align-items: start; }
+  @media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+  .steps li { display: flex; gap: 20px; align-items: flex-start; }
+  .steps li > div { min-width: 0; flex: 1; }
+  @media (max-width: 520px) { .steps li { flex-direction: column; gap: 8px; } }
+  .num { font-size: 14px; color: var(--accent); padding-top: 4px; }
+  .cmds { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; align-items: flex-start; }
+</style>

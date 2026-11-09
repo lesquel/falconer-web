@@ -1,7 +1,53 @@
 import { pupils, relative, safeAccent, tilt } from './motion';
 
-const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const finePointer = window.matchMedia('(pointer: fine)').matches;
+export type Decision = 'approve' | 'deny';
+export interface DemoLine {
+  text: string;
+  tone: 'ok' | 'no' | 'muted';
+}
+
+/** What the demo terminal prints after the user decides. Pure, so it is unit-tested. */
+export function approveLines(decision: Decision): DemoLine[] {
+  if (decision === 'approve') {
+    return [
+      { text: '✓ Aprobado desde el teléfono', tone: 'ok' },
+      { text: '$ pnpm test --filter api', tone: 'muted' },
+      { text: '✓ 42 tests pasaron. El agente sigue.', tone: 'ok' },
+    ];
+  }
+  return [
+    { text: '✗ Rechazado desde el teléfono', tone: 'no' },
+    { text: '⏺ Entendido, no corro el comando. ¿Qué hago en su lugar?', tone: 'muted' },
+  ];
+}
+
+/** Accepts only the two known decisions. */
+export function parseDecision(value: string | undefined): Decision | null {
+  return value === 'approve' || value === 'deny' ? value : null;
+}
+
+export const ACCENT_KEY = 'openmosh-accent';
+
+/** Reads the remembered accent; storage can be missing or throw (private mode). */
+export function loadAccent(storage: Pick<Storage, 'getItem'> | undefined): string {
+  try {
+    return safeAccent(storage?.getItem(ACCENT_KEY) ?? undefined);
+  } catch {
+    return safeAccent(undefined);
+  }
+}
+
+export function saveAccent(storage: Pick<Storage, 'setItem'> | undefined, hex: string): void {
+  try {
+    storage?.setItem(ACCENT_KEY, safeAccent(hex));
+  } catch {
+    /* storage blocked: the choice simply is not remembered */
+  }
+}
+
+const hasDom = typeof window !== 'undefined' && typeof document !== 'undefined';
+const reduceMotion = hasDom && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const finePointer = hasDom && window.matchMedia('(pointer: fine)').matches;
 
 function initPointerEffects(): void {
   if (reduceMotion) return;
@@ -75,13 +121,65 @@ function initTabs(): void {
   });
 }
 
+function storage(): Storage | undefined {
+  try {
+    return window.localStorage;
+  } catch {
+    return undefined;
+  }
+}
+
 function initAccents(): void {
+  const apply = (hex: string) => {
+    document.documentElement.style.setProperty('--accent', hex);
+    for (const b of document.querySelectorAll<HTMLButtonElement>('[data-accents] button')) {
+      b.setAttribute('aria-pressed', String(safeAccent(b.dataset.accent) === hex));
+    }
+  };
+  apply(loadAccent(storage()));
   initPressGroup('[data-accents]', (b) => {
-    document.documentElement.style.setProperty('--accent', safeAccent(b.dataset.accent));
+    const hex = safeAccent(b.dataset.accent);
+    apply(hex);
+    saveAccent(storage(), hex);
   });
 }
 
-initPointerEffects();
-initCopy();
-initTabs();
-initAccents();
+function initApproveDemo(): void {
+  const root = document.querySelector<HTMLElement>('[data-approve-demo]');
+  if (!root) return;
+  const log = root.querySelector<HTMLElement>('[data-approve-log]');
+  const actions = root.querySelector<HTMLElement>('[data-approve-actions]');
+  const reset = root.querySelector<HTMLButtonElement>('[data-approve-reset]');
+  if (!log || !actions || !reset) return;
+  const initial = log.innerHTML;
+
+  for (const button of actions.querySelectorAll<HTMLButtonElement>('button[data-decision]')) {
+    button.addEventListener('click', () => {
+      const decision = parseDecision(button.dataset.decision);
+      if (!decision) return;
+      for (const line of approveLines(decision)) {
+        const p = document.createElement('p');
+        p.className = line.tone;
+        p.textContent = line.text;
+        log.append(p);
+      }
+      actions.hidden = true;
+      reset.hidden = false;
+      reset.focus();
+    });
+  }
+  reset.addEventListener('click', () => {
+    log.innerHTML = initial;
+    actions.hidden = false;
+    reset.hidden = true;
+    actions.querySelector<HTMLButtonElement>('button')?.focus();
+  });
+}
+
+if (hasDom) {
+  initPointerEffects();
+  initCopy();
+  initTabs();
+  initAccents();
+  initApproveDemo();
+}

@@ -1,0 +1,38 @@
+---
+const repos = [
+  { name: 'openmosh-app', license: 'GPL-3.0', text: 'La app para Android.', href: 'https://github.com/lesquel/openmosh-app' },
+  { name: 'openmosh-hook', license: 'Apache-2.0', text: 'El hook para tu computadora.', href: 'https://github.com/lesquel/openmosh-hook' },
+];
+---
+
+<section class="wrap section" id="codigo" aria-labelledby="codigo-title">
+  <div class="section-head">
+    <span class="eyebrow">// código abierto</span>
+    <h2 class="section-title" id="codigo-title">Leelo. Compilalo.<br /><span>Mejoralo.</span></h2>
+  </div>
+  <div class="grid">
+    {repos.map((r) => (
+      <a class="card repo" href={r.href}>
+        <span class="mono lic">{r.license}</span>
+        <h3 class="mono">lesquel/{r.name}</h3>
+        <p>{r.text}</p>
+        <span class="go mono" aria-hidden="true">ver en GitHub →</span>
+      </a>
+    ))}
+    <a class="card repo" href="https://github.com/lesquel/openmosh-app/releases/latest">
+      <span class="mono lic">releases</span>
+      <h3 class="mono">Última versión</h3>
+      <p>APK firmado y notas de cada versión.</p>
+      <span class="go mono" aria-hidden="true">ver releases →</span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .repo { text-decoration: none; display: flex; flex-direction: column; gap: 4px; transition: border-color 120ms; }
+  .repo:hover { border-color: var(--accent); }
+  .repo h3 { font-size: 17px; overflow-wrap: anywhere; }
+  .lic { font-size: 12px; color: var(--accent); margin-bottom: 10px; }
+  .go { margin-top: 14px; font-size: 13px; color: var(--accent-soft); }
+</style>

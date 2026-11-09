@@ -1,0 +1,52 @@
+---
+/** Interactive approval demo: no network, everything happens in scripts/interactions.ts. */
+---
+
+<div class="demo" data-approve-demo>
+  <div class="bar mono" aria-hidden="true"><span></span><span></span><span></span> claude · api</div>
+  <div class="term mono" role="log" aria-live="polite" aria-label="Terminal de demostración" data-approve-log>
+    <p>⏺ Voy a correr los tests del paquete api.</p>
+    <p class="ask">? Bash(pnpm test --filter api) — ¿permitir?</p>
+  </div>
+  <div class="actions" data-approve-actions>
+    <button type="button" class="btn primary" data-decision="approve">Aprobar</button>
+    <button type="button" class="btn" data-decision="deny">Rechazar</button>
+  </div>
+  <button type="button" class="reset mono" data-approve-reset hidden>↺ otra vez</button>
+  <p class="note">Probalo: así se ve el aviso en el teléfono.</p>
+</div>
+
+<style>
+  .demo {
+    min-width: 0;
+    background: #0a0a0d;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: 0 30px 90px color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+  .bar { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--dim); }
+  .bar span { width: 10px; height: 10px; border-radius: 50%; background: var(--line-strong); }
+  .term { min-height: 150px; font-size: 13px; color: #d4d4d8; display: flex; flex-direction: column; gap: 6px; overflow-wrap: anywhere; }
+  .term :global(p) { margin: 0; }
+  .term :global(.ask) { color: var(--accent-soft); }
+  .term :global(.ok) { color: #4ade9e; }
+  .term :global(.no) { color: #fca5a5; }
+  .term :global(.muted) { color: var(--muted); }
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .actions[hidden] { display: none; }
+  .reset {
+    align-self: flex-start;
+    min-height: 44px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--line-strong);
+    background: var(--raised);
+    color: var(--fg);
+    cursor: pointer;
+  }
+  .note { margin: 0; font-size: 13px; color: var(--dim); }
+</style>

@@ -30,7 +30,8 @@ const { command = INSTALL, label = 'Copiar el comando de instalación' } = Astro
     cursor: pointer;
     text-align: left;
   }
-  code { overflow-x: auto; white-space: nowrap; min-width: 0; font: inherit; }
+  code { overflow-x: auto; scrollbar-width: none; white-space: nowrap; min-width: 0; font: inherit; }
+  code::-webkit-scrollbar { display: none; }
   code span { color: var(--accent); }
   .state { color: var(--muted); font-size: 13px; flex: none; }
   .install:hover { border-color: var(--accent); }

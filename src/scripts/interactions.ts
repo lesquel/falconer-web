@@ -132,6 +132,7 @@ function storage(): Storage | undefined {
 function initAccents(): void {
   const apply = (hex: string) => {
     document.documentElement.style.setProperty('--accent', hex);
+    document.dispatchEvent(new Event('openmosh:accent'));
     for (const b of document.querySelectorAll<HTMLButtonElement>('[data-accents] button')) {
       b.setAttribute('aria-pressed', String(safeAccent(b.dataset.accent) === hex));
     }

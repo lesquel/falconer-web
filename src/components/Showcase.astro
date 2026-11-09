@@ -1,37 +1,43 @@
 ---
+/** Phone mockup with the mole peeking beside it. Rendered inside the hero's right column. */
 import Mole from './Mole.astro';
 ---
 
-<section class="wrap showcase" aria-label="Así se ve en el teléfono">
-  <div class="stage">
-    <div class="phone" data-tilt>
-      <span class="hello">Buenas noches</span>
-      <span class="headline">Todo en orden,<br />menos <em>api</em>.</span>
-      <div class="log mono">
-        <span class="typing">⏺ Bash(pnpm test --filter api)</span><span class="caret">▍</span>
-      </div>
-      <div class="approve">
-        <span>Aprobar<br /><small>api · claude</small></span>
-        <span class="check" aria-hidden="true">✓</span>
-      </div>
-      <div class="dock" aria-hidden="true"><span class="on"></span><span></span><span></span><span></span></div>
+<figure class="stage" aria-label="Así se ve OpenMosh en el teléfono">
+  <div class="phone" data-tilt>
+    <span class="hello">Buenas noches</span>
+    <span class="headline">Todo en orden,<br />menos <em>api</em>.</span>
+    <div class="log mono">
+      <span class="typing">⏺ Bash(pnpm test --filter api)</span><span class="caret">▍</span>
     </div>
-    <div class="mole"><Mole watch size={190} label="El Topo te mira" /></div>
+    <div class="approve">
+      <span>Aprobar<br /><small>api · claude</small></span>
+      <span class="check" aria-hidden="true">✓</span>
+    </div>
+    <div class="dock" aria-hidden="true"><span class="on"></span><span></span><span></span><span></span></div>
   </div>
-</section>
+  <div class="mole"><Mole watch size={150} label="El Topo te mira" /></div>
+</figure>
 
 <style>
-  .showcase { position: relative; padding-block: 32px 72px; display: flex; justify-content: center; }
-  .stage { position: relative; perspective: 1200px; }
+  .stage {
+    position: relative;
+    margin: 0;
+    perspective: 1200px;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 12px;
+  }
   .phone {
-    width: 320px;
-    max-width: 82vw;
-    height: 600px;
-    border-radius: 52px;
+    position: relative;
+    z-index: 1;
+    width: min(300px, 74vw);
+    aspect-ratio: 300 / 580;
+    border-radius: 48px;
     background: #0a0a0d;
     border: 1px solid var(--line-strong);
     box-shadow: 0 40px 120px color-mix(in srgb, var(--accent) 25%, transparent);
-    padding: 30px 20px;
+    padding: 28px 18px;
     display: flex;
     flex-direction: column;
     gap: 14px;
@@ -39,7 +45,7 @@ import Mole from './Mole.astro';
     transition: transform 120ms linear;
   }
   .hello { font-size: 13px; color: var(--muted); }
-  .headline { font-size: 30px; font-weight: 800; line-height: 1.02; letter-spacing: -0.03em; }
+  .headline { font-size: 28px; font-weight: 800; line-height: 1.02; letter-spacing: -0.03em; }
   .headline em { font-style: normal; color: var(--accent); }
   .log {
     background: var(--raised);
@@ -84,10 +90,18 @@ import Mole from './Mole.astro';
     font-size: 22px;
   }
   .dock { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
-  .dock span { height: 48px; border-radius: 18px; background: var(--raised); }
+  .dock span { height: 44px; border-radius: 18px; background: var(--raised); }
   .dock .on { background: var(--fg); }
-  .mole { position: absolute; left: -150px; bottom: -10px; animation: om-float 5s ease-in-out infinite; }
+  /* The mole peeks from behind the phone's lower right corner, never over the copy. */
+  .mole {
+    position: absolute;
+    z-index: 2;
+    right: calc(50% - min(150px, 37vw) - 92px);
+    bottom: -6px;
+    animation: om-float 5s ease-in-out infinite;
+  }
   @media (max-width: 640px) {
-    .mole { left: -40px; bottom: -40px; transform: scale(0.7); }
+    .mole { right: calc(50% - 37vw - 36px); bottom: -10px; }
+    .mole :global(svg) { width: 104px; height: 104px; }
   }
 </style>

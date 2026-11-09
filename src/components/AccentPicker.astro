@@ -1,0 +1,59 @@
+---
+/** Compact accent picker. The choice recolours the page and is remembered (see scripts/interactions.ts). */
+const accents = [
+  { name: 'Azul', hex: '#6b93ff' },
+  { name: 'Verde', hex: '#4ade9e' },
+  { name: 'Violeta', hex: '#b69cff' },
+  { name: 'Ámbar', hex: '#ffc24d' },
+];
+---
+
+<div class="picker" role="group" aria-label="Color de acento de la página" data-accents>
+  <span class="label mono" aria-hidden="true">acento</span>
+  {accents.map((a, i) => (
+    <button
+      type="button"
+      title={a.name}
+      aria-label={`Acento ${a.name}`}
+      aria-pressed={i === 0 ? 'true' : 'false'}
+      data-accent={a.hex}
+      style={`--swatch:${a.hex}`}
+    ></button>
+  ))}
+</div>
+
+<style>
+  .picker {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px 4px 3px 12px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--raised) 85%, transparent);
+  }
+  .label { font-size: 12px; color: var(--dim); margin-right: 4px; }
+  button {
+    width: 36px;
+    height: 36px;
+    border: 0;
+    padding: 0;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+  }
+  button::before {
+    content: '';
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--swatch);
+    box-shadow: 0 0 0 2px transparent;
+    transition: box-shadow 120ms;
+  }
+  button[aria-pressed='true']::before { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--fg); }
+  button:hover::before { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--muted); }
+  button[aria-pressed='true']:hover::before { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--fg); }
+</style>

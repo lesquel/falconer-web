@@ -1,30 +1,41 @@
 ---
 import InstallCommand from './InstallCommand.astro';
+import Showcase from './Showcase.astro';
 ---
 
-<section class="wrap hero">
-  <span class="badge mono">● nuevo · la PC te sigue cuando cambiás de tab</span>
-  <h1>Tus agentes.<br /><span>Tu bolsillo.</span></h1>
-  <p>
-    La terminal móvil para tus agentes de IA. Te avisa cuando uno te necesita y aprobás en un
-    toque. Gratis, abierta y en tu propia máquina.
-  </p>
-  <div class="actions" id="instalar">
-    <InstallCommand />
-    <a href="#funciones" class="primary">Ver cómo funciona</a>
+<section class="wrap hero" aria-labelledby="hero-title">
+  <div class="copy">
+    <span class="badge mono">● v0.2.0 · la PC te sigue cuando cambiás de tab</span>
+    <h1 id="hero-title">Tus agentes.<br /><span>Tu bolsillo.</span></h1>
+    <p class="lead">
+      La terminal móvil para tus agentes de IA. Te avisa cuando uno te necesita y aprobás en un
+      toque. Gratis, abierta y en tu propia máquina.
+    </p>
+    <div class="actions" id="instalar">
+      <a href="https://github.com/lesquel/openmosh-app/releases/latest" class="btn primary">Descargar APK</a>
+      <a href="#como-funciona" class="btn">Ver cómo funciona</a>
+    </div>
+    <div class="install">
+      <span class="hint mono">En tu computadora (Linux o macOS):</span>
+      <InstallCommand />
+    </div>
+  </div>
+  <div class="visual">
+    <Showcase />
   </div>
 </section>
 
 <style>
   .hero {
     position: relative;
-    padding-block: 48px 24px;
-    display: flex;
-    flex-direction: column;
+    padding-block: 40px 72px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 56px;
     align-items: center;
-    text-align: center;
-    gap: 22px;
+    overflow-x: clip;
   }
+  .copy { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; min-width: 0; }
   .badge {
     font-size: 13px;
     border: 1px solid var(--line-strong);
@@ -36,20 +47,20 @@ import InstallCommand from './InstallCommand.astro';
   h1 {
     margin: 0;
     font-weight: 900;
-    font-size: clamp(52px, 8.5vw, 128px);
+    font-size: clamp(52px, 7.4vw, 112px);
     line-height: 0.92;
     letter-spacing: -0.055em;
-    text-wrap: balance;
   }
   h1 span { color: var(--dim); }
-  p { margin: 0; max-width: 620px; font-size: 20px; color: var(--muted); }
-  .actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center; max-width: 100%; }
-  .primary {
-    background: var(--accent);
-    color: var(--bg);
-    font-weight: 800;
-    padding: 16px 22px;
-    border-radius: 14px;
-    text-decoration: none;
+  .lead { max-width: 560px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .install { display: flex; flex-direction: column; gap: 8px; max-width: 100%; }
+  .hint { font-size: 12px; color: var(--dim); }
+  .visual { min-width: 0; }
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: minmax(0, 1fr); gap: 48px; padding-top: 24px; }
+    .copy { align-items: center; text-align: center; }
+    .install { align-items: center; }
+    .actions { justify-content: center; }
   }
 </style>

@@ -1,11 +1,18 @@
 ---
-/** One-line installer with a copy button (scripts/copy.ts). */
-const command = 'curl -fsSL https://raw.githubusercontent.com/lesquel/openmosh-hook/main/install.sh | sh';
+/** One-line command with a copy button (see scripts/interactions.ts). Defaults to the hook installer. */
+const INSTALL = 'curl -fsSL https://raw.githubusercontent.com/lesquel/openmosh-hook/main/install.sh | sh';
+
+interface Props {
+  command?: string;
+  label?: string;
+}
+
+const { command = INSTALL, label = 'Copiar el comando de instalación' } = Astro.props;
 ---
 
-<button type="button" class="install mono" data-copy={command} aria-label="Copiar el comando de instalación">
+<button type="button" class="install mono" data-copy={command} aria-label={label}>
   <code><span aria-hidden="true">$</span> {command}</code>
-  <span class="state" data-copy-state>copiar</span>
+  <span class="state" data-copy-state aria-live="polite">copiar</span>
 </button>
 
 <style>
@@ -14,11 +21,11 @@ const command = 'curl -fsSL https://raw.githubusercontent.com/lesquel/openmosh-h
     display: flex;
     gap: 14px;
     align-items: center;
-    font-size: 15px;
+    font-size: 14px;
     color: var(--fg);
     background: var(--raised);
     border: 1px solid var(--line-strong);
-    padding: 15px 18px;
+    padding: 14px 16px;
     border-radius: 14px;
     cursor: pointer;
     text-align: left;

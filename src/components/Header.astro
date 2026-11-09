@@ -1,4 +1,5 @@
 ---
+import AccentPicker from './AccentPicker.astro';
 ---
 
 <header class="wrap header">
@@ -7,19 +8,26 @@
     openmosh
   </a>
   <nav aria-label="Principal">
-    <a href="#funciones">Funciones</a>
-    <a href="#seguridad">Seguridad</a>
-    <a href="#instalar" class="cta">Instalar</a>
+    <a href="#que-es" class="link">Qué es</a>
+    <a href="#como-funciona" class="link">Cómo funciona</a>
+    <a href="#funciones" class="link">Funciones</a>
+    <a href="#seguridad" class="link">Seguridad</a>
+    <a href="#faq" class="link">FAQ</a>
   </nav>
+  <div class="tools">
+    <AccentPicker />
+    <a href="#instalar" class="cta">Instalar</a>
+  </div>
 </header>
 
 <style>
   .header {
     position: relative;
-    padding-block: 22px;
+    z-index: 2;
+    padding-block: 20px;
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 12px 24px;
     justify-content: space-between;
     align-items: center;
   }
@@ -32,14 +40,22 @@
     text-decoration: none;
   }
   .brand img { border-radius: 8px; }
-  nav { display: flex; flex-wrap: wrap; gap: 22px; align-items: center; font-size: 15px; }
-  nav a { color: var(--muted); text-decoration: none; }
+  nav { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: center; font-size: 15px; }
+  nav a { color: var(--muted); text-decoration: none; padding-block: 8px; }
   nav a:hover { color: var(--fg); }
-  nav .cta {
+  .tools { display: flex; align-items: center; gap: 10px; }
+  .cta {
     color: var(--bg);
     background: var(--fg);
-    padding: 9px 16px;
+    padding: 10px 16px;
     border-radius: 10px;
     font-weight: 700;
+    text-decoration: none;
+  }
+  @media (max-width: 960px) {
+    nav { order: 3; width: 100%; justify-content: center; border-top: 1px solid var(--line); padding-top: 6px; gap: 4px 16px; font-size: 14px; }
+  }
+  @media (max-width: 420px) {
+    .tools :global(.label) { display: none; }
   }
 </style>

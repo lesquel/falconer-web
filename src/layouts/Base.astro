@@ -4,13 +4,14 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description: string;
+  lang?: string;
 }
 
-const { title, description } = Astro.props;
+const { title, description, lang = 'es' } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -19,6 +20,7 @@ const { title, description } = Astro.props;
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <slot name="head" />
     <title>{title}</title>
   </head>
   <body>

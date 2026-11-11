@@ -1,0 +1,110 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+
+<Base
+  lang="en"
+  title="OpenMosh Notifications"
+  description="Install this page on your Home Screen to receive OpenMosh push notifications."
+>
+  <Fragment slot="head">
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="OpenMosh" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  </Fragment>
+
+  <main class="wrap notify">
+    <p class="eyebrow">openmosh / notifications</p>
+    <h1 class="section-title">Push, <span>without Apple's paid account.</span></h1>
+    <p class="lead">
+      This page is a tiny Home-Screen app that receives OpenMosh notifications. Your phone creates its own keys;
+      nothing goes through a third party except the browser's push service.
+    </p>
+
+    <section class="card" data-view="loading"><p>Checking this browser…</p></section>
+
+    <section class="card" data-view="unsupported" hidden>
+      <h3>This browser can't receive push</h3>
+      <p>
+        It is missing service workers, Push or Notifications. On iPhone use Safari on iOS 16.4 or newer; on Android
+        use Chrome.
+      </p>
+    </section>
+
+    <section class="card" data-view="install" hidden>
+      <h3>Add it to your Home Screen first</h3>
+      <p>iPhone only delivers web push to Home-Screen apps.</p>
+      <ol class="steps">
+        <li>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3m0 0L8 7m4-4 4 4M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1" /></svg>
+          <span>Tap <b>Share</b> in Safari's toolbar.</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" /><path d="M12 8v8M8 12h8" /></svg>
+          <span>Choose <b>Add to Home Screen</b>, then <b>Add</b>.</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5" /><circle cx="12" cy="17.5" r="1" /></svg>
+          <span>Open <b>OpenMosh</b> from the new icon (not from Safari) and come back here.</span>
+        </li>
+      </ol>
+    </section>
+
+    <section class="card" data-view="enable" hidden>
+      <h3>Turn on notifications</h3>
+      <p>Your browser will ask for permission. Then you hand the result to the OpenMosh app.</p>
+      <p class="actions"><button class="btn primary" id="enable-btn" type="button">Enable notifications</button></p>
+    </section>
+
+    <section class="card" data-view="denied" hidden>
+      <h3>Notifications are blocked</h3>
+      <p>
+        iPhone: Settings → Notifications → OpenMosh → Allow. Android/Chrome: tap the lock icon → Permissions →
+        Notifications → Allow. Then reload this page.
+      </p>
+    </section>
+
+    <section class="card" data-view="ready" hidden id="code-box">
+      <h3>Ready</h3>
+      <p class="actions">
+        <a class="btn primary" id="open-link" href="#">Open in OpenMosh</a>
+        <button class="btn" id="copy-btn" type="button">Copy code</button>
+      </p>
+      <p>Then open OpenMosh → it sends this to your paired computers.</p>
+      <p class="hint">If the button doesn't open the app, tap "Copy code" and paste it in OpenMosh.</p>
+      <textarea id="code-fallback" class="mono" rows="4" readonly hidden></textarea>
+      <p class="actions"><button class="btn" id="reset-btn" type="button">Reset</button></p>
+      <p class="hint">Reset unsubscribes this device and deletes its keys.</p>
+    </section>
+
+    <section class="card" data-view="error" hidden><h3>Something went wrong</h3><p id="error-text"></p></section>
+
+    <p class="privacy">
+      Notifications are generic (no commands or hostnames) and end-to-end encrypted between your computer and this
+      device.
+    </p>
+  </main>
+
+  <script>
+    import '../../scripts/notify';
+  </script>
+</Base>
+
+<style>
+  .notify { max-width: 640px; padding-block: 48px 64px; display: flex; flex-direction: column; gap: 20px; }
+  .notify .section-title { font-size: clamp(30px, 8vw, 48px); }
+  .card[hidden], [data-view][hidden] { display: none; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px !important; }
+  .hint { font-size: 14px; color: var(--dim) !important; margin-top: 12px !important; }
+  .privacy { font-size: 14px; color: var(--dim); margin: 0; }
+  .steps { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-direction: column; gap: 14px; counter-reset: s; }
+  .steps li { display: flex; align-items: center; gap: 14px; color: var(--muted); }
+  .steps svg { flex: none; width: 40px; height: 40px; padding: 8px; border-radius: 12px; background: var(--raised);
+    border: 1px solid var(--line-strong); fill: none; stroke: var(--accent); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .steps b { color: var(--fg); }
+  textarea { width: 100%; margin-top: 12px; background: var(--bg); color: var(--fg); border: 1px solid var(--line-strong); border-radius: 12px; padding: 10px; font-size: 12px; }
+</style>

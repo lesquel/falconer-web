@@ -31,7 +31,7 @@ const CORPUS: Line[] = [
   ['> agrega tests al endpoint de pagos', 1], ['● Read src/payments.ts', 0], ['● Edit tests/payments.spec.ts (+42 -3)', 0],
   ['  ⎿ 12 passed (1.8s)', 0], ['● Bash(npm run lint)', 0], ['  ⎿ 0 problems', 0], ['> arreglá el menú en celulares', 1],
   ['● Edit src/components/Header.astro', 0], ['  ⎿ 1 page(s) built in 488ms', 0], ['$ git status', 1], ['On branch feat/pagos', 0],
-  ['● Write docs/payments.md', 0], ['Attached image: ~/.openmosh/uploads/pizarron.jpg', 0], ['● Thinking…', 0],
+  ['● Write docs/payments.md', 0], ['Attached image: ~/.falconer/uploads/pizarron.jpg', 0], ['● Thinking…', 0],
   ['● Grep "refund" in src/', 0], ['  ⎿ 7 matches in 3 files', 0], ['codex › running cargo test', 0], ['test result: ok. 331 passed', 0],
   ['● Edit src/checkout/total.ts', 0], ['● Bash(npx vitest run)', 0], ['  ⎿ 11 passed', 0],
   ['● Read package.json', 0], ['gemini › reviewing diff (4 files)', 0], ['● Update todos', 0], ['  ☐ migrate refunds table', 0], ['  ☒ add idempotency key', 0],

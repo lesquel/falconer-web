@@ -53,7 +53,7 @@ function initPointerEffects(): void {
   if (reduceMotion) return;
   const root = document.documentElement;
   const phone = document.querySelector<HTMLElement>('[data-tilt]');
-  const eyes = document.querySelector<SVGGElement>('[data-mole] [data-pupils]');
+  const eyes = document.querySelector<SVGGElement>('[data-falcon] [data-pupils]');
   let frame = 0;
   let last = { x: window.innerWidth / 2, y: window.innerHeight / 3 };
 
@@ -71,7 +71,7 @@ function initPointerEffects(): void {
       const svg = eyes.ownerSVGElement;
       if (svg) {
         const { dx, dy } = relative(last, svg.getBoundingClientRect());
-        eyes.setAttribute('transform', pupils(dx, dy));
+        eyes.setAttribute('transform', pupils(dx, dy, 1.6));
       }
     }
   };
@@ -132,7 +132,7 @@ function storage(): Storage | undefined {
 function initAccents(): void {
   const apply = (hex: string) => {
     document.documentElement.style.setProperty('--accent', hex);
-    document.dispatchEvent(new Event('openmosh:accent'));
+    document.dispatchEvent(new Event('falconer:accent'));
     for (const b of document.querySelectorAll<HTMLButtonElement>('[data-accents] button')) {
       b.setAttribute('aria-pressed', String(safeAccent(b.dataset.accent) === hex));
     }

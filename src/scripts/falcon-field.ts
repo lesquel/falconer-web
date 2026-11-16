@@ -1,7 +1,7 @@
 /**
- * Hero "Topo Cava": a living Herdr session drawn on one canvas, with Topo the mole
- * built from terminal glyphs, a pointer that digs, and a push notification the visitor
- * approves by sliding. One canvas, ~30 fps, paused off-screen, hidden tab or reduced motion.
+ * Hero "Falcon Field": a living Herdr session drawn on one canvas, with the Falconer falcon
+ * built from terminal glyphs, a pointer that ruffles the text, and a push notification the
+ * visitor approves by sliding. One canvas, ~30 fps, paused off-screen, hidden tab or reduced motion.
  */
 
 export type Line = [text: string, bright: number];
@@ -20,7 +20,7 @@ export function statusLine(cols: number, time: string): string {
   return (left + ' '.repeat(gap) + right).slice(0, cols).padEnd(cols);
 }
 
-/** Ease-out with a small overshoot: Topo pops out of the hole. */
+/** Ease-out with a small overshoot: the falcon rises onto its perch. */
 export function easeOutBack(t: number): number {
   const x = Math.min(1, Math.max(0, t));
   const c = 1.7;
@@ -36,10 +36,19 @@ const CORPUS: Line[] = [
   ['● Edit src/checkout/total.ts', 0], ['● Bash(npx vitest run)', 0], ['  ⎿ 11 passed', 0],
   ['● Read package.json', 0], ['gemini › reviewing diff (4 files)', 0], ['● Update todos', 0], ['  ☐ migrate refunds table', 0], ['  ☒ add idempotency key', 0],
 ];
-const BOOT: Line[] = [['$ ssh tu-pc', 1], ['Conectado por Tailscale · 100.•••.•••.12', 0], ['$ openmosh-hook attach herdr', 1], ['herdr · espejo activo · 3 pestañas', 0], ['', 0]];
+const BOOT: Line[] = [['$ ssh tu-pc', 1], ['Conectado por Tailscale · 100.•••.•••.12', 0], ['$ falconer-hook attach herdr', 1], ['herdr · espejo activo · 3 pestañas', 0], ['', 0]];
 const TABS = [' 1 claude · api-pagos', ' 2 codex · landing', ' 3 gemini · docs'];
 const RAMP = ' .:-=+*#%@';
 const SCRAMBLE = '#%&@*+=~$/<>';
+
+/** Path data of public/falconer.svg (100x100 viewBox), reused to draw the falcon in glyphs. */
+const FALCON = {
+  light: 'M30 100 C28 82 26 66 30 54 C33 36 46 24 60 24 C70 24 77 29 80 36 L86 40 C90 43 91 49 89 54 C88 58 85 61 81 62 C82 58 82 55 80 53 C77 55 73 56 70 56 C68 66 68 80 72 100 Z',
+  dark: 'M30 100 C28 82 26 66 30 54 C33 36 46 24 60 24 C70 24 77 29 80 36 L76 40 C72 38 68 38 64 40 C58 44 56 52 56 62 C56 68 52 70 49 66 C47 62 46 56 44 52 C40 58 38 70 40 100 Z',
+  streaks: 'M35 76 C37 68 39 62 42 57 M32 92 C33 85 34 79 36 73 M44 32 C50 28 56 27 62 28',
+  cere: 'M75 35.5 C79.5 36.5 83 39 85.5 42.5 L80 47.5 C79 43.5 77 41 73.5 39.5 Z',
+  beak: 'M85.5 42.5 C89.5 45 91 49.5 89 54.5 C88 58 85 61 81 62 C82 58 82 55 80 52.5 L80 47.5 Z',
+} as const;
 
 interface Ask { kind: 'ask'; agent: string; proj: string; cmd: string; pane: number; ok: string[] }
 interface Done { kind: 'done'; agent: string; proj: string; body: string; pane: number }
@@ -56,9 +65,9 @@ const noise = () => SCRAMBLE[(Math.random() * SCRAMBLE.length) | 0];
 const hhmm = () => { const d = new Date(); return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; };
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
 
-export function initTopoField(hero: HTMLElement): void {
-  const cv = hero.querySelector<HTMLCanvasElement>('[data-topo-canvas]');
-  const notif = hero.querySelector<HTMLElement>('[data-topo-notif]');
+export function initFalconField(hero: HTMLElement): void {
+  const cv = hero.querySelector<HTMLCanvasElement>('[data-falcon-canvas]');
+  const notif = hero.querySelector<HTMLElement>('[data-falcon-notif]');
   const ctx = cv?.getContext('2d');
   if (!cv || !notif || !ctx) return;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -103,10 +112,15 @@ export function initTopoField(hero: HTMLElement): void {
     return r;
   }
 
-  // Topo is drawn on a small offscreen canvas (one pixel per cell, y stretched so shapes stay
-  // round) and sampled. R = brightness, G = accent (255 lens ring, 120 strap), B = clear text.
+  // The falcon is drawn on a small offscreen canvas (one pixel per cell, y stretched so shapes
+  // stay round) and sampled. R = brightness, G = accent (255 iris, 120 eye ring and cere),
+  // B = clear text. Its paths are the ones of public/falconer.svg (100x100 viewBox).
   const oc = document.createElement('canvas');
   const o = oc.getContext('2d', { willReadFrequently: true })!;
+  const P = {
+    light: new Path2D(FALCON.light), dark: new Path2D(FALCON.dark), streaks: new Path2D(FALCON.streaks),
+    cere: new Path2D(FALCON.cere), beak: new Path2D(FALCON.beak),
+  };
   function buildMask(now: number) {
     const k = ch / cw;
     oc.width = cols; oc.height = Math.ceil(rows * k);
@@ -115,41 +129,47 @@ export function initTopoField(hero: HTMLElement): void {
     const s = oc.height * (narrow ? 0.22 : 0.6);
     const base = oc.height * (narrow ? 0.36 : 0.93);
     const rise = riseNow(now);
-    const lift = (1 - rise) * s * 1.15;
-    const hy = base - s * 0.72 + lift;
+    const lift = (1 - rise) * s * 1.3;
+    const u = s / 60; // one SVG unit, in mask pixels
+    const x0 = cx - 58 * u, y0 = base + lift - 100 * u;
     const ell = (x: number, y: number, rx: number, ry: number, fill: string | CanvasGradient) => {
       o.fillStyle = fill; o.beginPath(); o.ellipse(x, y, Math.max(0.1, rx), Math.max(0.1, ry), 0, 0, Math.PI * 2); o.fill();
     };
+    // Gradients are built in SVG units, under the falcon transform.
     const shade = (x: number, y: number, r: number, a: number, b: number) => {
       const g = o.createRadialGradient(x - r * 0.35, y - r * 0.35, 0, x, y, r * 1.1);
       g.addColorStop(0, `rgb(${a},0,0)`); g.addColorStop(1, `rgb(${b},0,0)`); return g;
     };
-    // Topo looks at the cursor if it moved lately, else at the notification, else ahead.
+    // The falcon looks at the cursor if it moved lately, else at the notification, else ahead.
     let tx = 0, ty = 0, look = false;
     if (now - pointer.t < 2500) { tx = pointer.x; ty = pointer.y * k; look = true; }
     else if (notif!.classList.contains('show')) { tx = cols * 0.5; ty = 0; look = true; }
+    o.setTransform(1, 0, 0, 1, 0, 0);
     o.clearRect(0, 0, oc.width, oc.height);
-    ell(cx, base - s * 0.5, s * 0.66, s * 0.72, 'rgb(0,0,255)');
+    ell(cx - s * 0.05, base - s * 0.62, s * 0.66, s * 0.74, 'rgb(0,0,255)');
     ell(cx, base, s * 1.0, s * 0.2, 'rgb(0,0,255)');
     o.save(); o.beginPath(); o.rect(0, 0, oc.width, base + s * 0.02); o.clip();
-    ell(cx, base - s * 0.28 + lift, s * 0.46, s * 0.42, shade(cx, base - s * 0.28 + lift, s * 0.46, 150, 60));
-    ell(cx, hy, s * 0.36, s * 0.34, shade(cx, hy, s * 0.36, 245, 95));
-    o.fillStyle = 'rgb(150,120,0)'; o.fillRect(cx - s * 0.37, hy - s * 0.12, s * 0.74, s * 0.05);
-    for (const d of [-1, 1]) {
-      const gx = cx + d * s * 0.155, gy = hy - s * 0.09;
-      const vx = tx - gx, vy = ty - gy, m = Math.hypot(vx, vy) || 1;
-      const ox = look ? (vx / m) * s * 0.035 : 0, oy = look ? (vy / m) * s * 0.035 : 0;
-      ell(gx, gy, s * 0.125, s * 0.125, flash > 0 && flash % 4 < 2 ? 'rgb(255,0,0)' : 'rgb(255,255,0)');
-      ell(gx + ox, gy + oy, s * 0.07, s * 0.07, 'rgb(18,0,255)');
-      ell(gx + ox * 1.4 - s * 0.025, gy + oy * 1.4 - s * 0.025, s * 0.022, s * 0.022, 'rgb(255,0,0)');
-    }
-    ell(cx, hy + s * 0.14, s * 0.1, s * 0.07, 'rgb(255,0,0)');
+    o.setTransform(u, 0, 0, u, x0, y0);
+    o.fillStyle = shade(66, 48, 40, 255, 165); o.fill(P.light);
+    o.fillStyle = shade(56, 40, 44, 105, 38); o.fill(P.dark);
+    o.strokeStyle = 'rgb(150,0,0)'; o.lineWidth = 2.4; o.lineCap = 'round'; o.stroke(P.streaks);
+    ell(66, 43, 7.4, 7.4, 'rgb(40,0,0)');
+    o.fillStyle = 'rgb(150,120,0)'; o.fill(P.cere);
+    o.fillStyle = 'rgb(115,0,0)'; o.fill(P.beak);
+    ell(66, 43, 5.6, 5.6, 'rgb(150,120,0)');
+    const ex = x0 + 66 * u, ey = y0 + 43 * u;
+    const vx = tx - ex, vy = ty - ey, m = Math.hypot(vx, vy) || 1;
+    const ox = look ? (vx / m) * 1.2 : 0, oy = look ? (vy / m) * 1.2 : 0;
+    ell(66, 43, 4.2, 4.2, flash > 0 && flash % 4 < 2 ? 'rgb(255,0,0)' : 'rgb(255,255,0)');
+    ell(66 + ox, 43 + oy, 2.3, 2.3, 'rgb(18,0,255)');
+    ell(66 + ox * 1.4 - 1.2, 43 + oy * 1.4 - 1.2, 0.9, 0.9, 'rgb(255,0,0)');
     o.restore();
-    ell(cx, base, s * 0.86, s * 0.14, shade(cx, base, s * 0.86, 90, 45));
-    ell(cx, base + s * 0.01, s * 0.5, s * 0.06, 'rgb(0,0,255)');
+    // The perch, and the talons once the falcon has landed on it.
+    ell(cx, base, s * 0.86, s * 0.1, shade(cx, base, s * 0.86, 90, 45));
+    ell(cx, base + s * 0.01, s * 0.5, s * 0.04, 'rgb(0,0,255)');
     if (rise > 0.85) {
-      ell(cx - s * 0.3, base - s * 0.07, s * 0.13, s * 0.065, 'rgb(225,0,0)');
-      ell(cx + s * 0.3, base - s * 0.07, s * 0.13, s * 0.065, 'rgb(225,0,0)');
+      ell(cx - s * 0.3, base - s * 0.04, s * 0.11, s * 0.05, 'rgb(225,0,0)');
+      ell(cx + s * 0.1, base - s * 0.04, s * 0.11, s * 0.05, 'rgb(225,0,0)');
     }
     const d = o.getImageData(0, 0, oc.width, oc.height).data;
     if (bright.length !== cols * rows) { bright = new Float32Array(cols * rows); accm = new Uint8Array(cols * rows); clr = new Uint8Array(cols * rows); }
@@ -236,7 +256,7 @@ export function initTopoField(hero: HTMLElement): void {
     if (flash > 0) flash--;
   }
 
-  function dig(x: number, y: number, spray: number) {
+  function ruffle(x: number, y: number, spray: number) {
     const c0 = x / cw, r0 = y / ch, R = W < 640 ? 4 : 5;
     for (let r = Math.max(0, (r0 - R) | 0); r < Math.min(rows - 1, r0 + R + 1); r++)
       for (let c = Math.max(0, (c0 - R * 2) | 0); c < Math.min(cols, c0 + R * 2 + 1); c++) {
@@ -247,18 +267,18 @@ export function initTopoField(hero: HTMLElement): void {
       parts.push({ x, y, vx: (Math.random() - 0.5) * 5, vy: -Math.random() * 4 - 1.5, life: 1, ch: noise(), acc: Math.random() < 0.45 });
   }
 
-  const skip = (t: EventTarget | null) => t instanceof Element && t.closest('[data-topo-notif], [data-topo-copy]');
+  const skip = (t: EventTarget | null) => t instanceof Element && t.closest('[data-falcon-notif], [data-falcon-copy]');
   hero.addEventListener('pointermove', (e) => {
     if (skip(e.target)) return;
     const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
     pointer.x = x / cw; pointer.y = y / ch; pointer.t = performance.now();
-    dig(x, y, Math.min(4, Math.round(Math.hypot(e.movementX || 0, e.movementY || 0) / 8)));
+    ruffle(x, y, Math.min(4, Math.round(Math.hypot(e.movementX || 0, e.movementY || 0) / 8)));
     if (reduce) { buildMask(pointer.t); draw(); }
   });
   hero.addEventListener('pointerdown', (e) => {
     if (skip(e.target)) return;
     const r = cv.getBoundingClientRect();
-    dig(e.clientX - r.left, e.clientY - r.top, 14);
+    ruffle(e.clientX - r.left, e.clientY - r.top, 14);
   });
 
   function pushLine(p: number, t: string, b: number) {
@@ -279,7 +299,7 @@ export function initTopoField(hero: HTMLElement): void {
   };
   new IntersectionObserver((en) => { visible = en[0].isIntersecting; setRun(); }).observe(hero);
   document.addEventListener('visibilitychange', setRun);
-  document.addEventListener('openmosh:accent', () => { readAccent(); if (reduce) draw(); });
+  document.addEventListener('falconer:accent', () => { readAccent(); if (reduce) draw(); });
 
   let resizeTimer = 0;
   window.addEventListener('resize', () => {
@@ -297,7 +317,7 @@ export function initTopoField(hero: HTMLElement): void {
     const a = el.getBoundingClientRect(), b = cv.getBoundingClientRect();
     return { x: (a.left + a.width / 2 - b.left) / cw, y: (a.top + a.height / 2 - b.top) / ch };
   };
-  const head = '<div class="n-top"><i></i><span>OpenMosh · tu-pc · ahora</span><span class="lock">🔒 E2E</span></div>';
+  const head = '<div class="n-top"><i></i><span>Falconer · tu-pc · ahora</span><span class="lock">🔒 E2E</span></div>';
 
   function show() {
     const e = EVENTS[ev % EVENTS.length];

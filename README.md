@@ -1,6 +1,7 @@
 # falconer-web
 
 Landing page of [Falconer](https://github.com/lesquel/falconer), built with [Astro](https://astro.build).
+Live at **https://falconer-web.vercel.app/** (Vercel, deployed from `main`).
 Static output, self-hosted fonts, no analytics and no third-party requests.
 
 ## Develop
@@ -26,6 +27,16 @@ npm run preview  # serve dist/ locally
 | `src/styles/global.css` | Tokens and keyframes; animations stop with `prefers-reduced-motion` |
 
 The design is "LAN-J · Spotlight" from the Falconer (formerly OpenMosh) design canvas.
+
+## Site URL and social preview
+
+`site` in `astro.config.mjs` is the canonical origin; `src/layouts/Base.astro` derives the canonical link and the
+Open Graph/Twitter URLs from it. `public/robots.txt` and the static `public/sitemap.xml` list the landing only (the
+`/notify/` pages are `noindex`).
+
+`public/og.png` (1200x630) is rendered from `design/og-image.svg`, which embeds `public/falconer.svg`. The SVG uses
+Inter Tight and JetBrains Mono; point fontconfig at the woff2 files in `node_modules/@fontsource*` and run
+`rsvg-convert -w 1200 -h 630 design/og-image.svg -o public/og.png`.
 
 ## Notifications PWA (/notify/)
 

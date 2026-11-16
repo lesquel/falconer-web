@@ -93,11 +93,26 @@ import InstallCommand from './InstallCommand.astro';
     padding: 5px 12px 5px 8px;
     background: rgba(5, 5, 7, 0.6);
   }
-  .badge i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: live 2s infinite; }
-  @keyframes live {
-    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent); }
-    70%, 100% { box-shadow: 0 0 0 8px transparent; }
+  .badge i { position: relative; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  /* The pulse ring scales and fades (compositor-only) instead of animating box-shadow on the main thread:
+     8px dot + 8px ring = 3x, from 60% accent to transparent. */
+  .badge i::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 60%, transparent);
+    animation: live 2s infinite;
   }
+  @keyframes live {
+    0% { transform: scale(1); opacity: 1; }
+    70%, 100% { transform: scale(3); opacity: 0; }
+  }
+  /* Set by falcon-field.ts while the hero is off screen or the tab is hidden. !important beats the
+     `animation` shorthands below, which would otherwise reset the play state. */
+  .hero[data-paused] :global(*),
+  .hero[data-paused] :global(*::before),
+  .hero[data-paused] :global(*::after) { animation-play-state: paused !important; }
   .badge b { color: var(--fg); }
   h1 {
     margin: 0 0 20px;
@@ -232,6 +247,6 @@ import InstallCommand from './InstallCommand.astro';
     .notif { transition: none; }
     .notif:global(.show) { animation: none; }
     .notif :global(.label span),
-    .badge i { animation: none; }
+    .badge i::after { animation: none; }
   }
 </style>

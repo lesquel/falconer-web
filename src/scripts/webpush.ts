@@ -40,7 +40,7 @@ function expectLength(name: string, bytes: Uint8Array, length: number): void {
   if (bytes.length !== length) throw new Error(`${name} must be ${length} bytes, got ${bytes.length}`);
 }
 
-/** Registration object handed to OpenMosh; field names and sizes are a cross-repo contract. */
+/** Registration object handed to the Falconer app; field names and sizes are a cross-repo contract. */
 export function buildRegistration(input: BlobInput): Registration {
   expectLength('p256dh', input.p256dh, 65);
   expectLength('auth', input.auth, 16);

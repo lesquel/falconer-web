@@ -1,6 +1,7 @@
 # falconer-web
 
 Landing page of [Falconer](https://github.com/lesquel/falconer), built with [Astro](https://astro.build).
+Live at **https://falconer-web.vercel.app/** (Vercel, deployed from `main`).
 Static output, self-hosted fonts, no analytics and no third-party requests.
 
 ## Develop
@@ -24,8 +25,28 @@ npm run preview  # serve dist/ locally
 | `src/scripts/motion.ts` | Pure helpers (tilt, pupils, accent whitelist), unit-tested |
 | `src/scripts/interactions.ts` | Pointer spotlight, 3D tilt, falcon eye, copy buttons, tab demo, remembered accent, approve demo; pure parts exported and unit-tested |
 | `src/styles/global.css` | Tokens and keyframes; animations stop with `prefers-reduced-motion` |
+| `src/styles/fonts.css`, `font-archivo.css` | Self-hosted Latin woff2 subsets (Inter Tight, JetBrains Mono; Archivo for the hero headline only) |
+| `vercel.json` | Security headers (CSP, nosniff, Referrer/Permissions-Policy, framing) and a one-year immutable cache for `/_astro/*` |
 
 The design is "LAN-J · Spotlight" from the Falconer (formerly OpenMosh) design canvas.
+
+## Site URL and social preview
+
+`site` in `astro.config.mjs` is the canonical origin; `src/layouts/Base.astro` derives the canonical link and the
+Open Graph/Twitter URLs from it. `public/robots.txt` and the static `public/sitemap.xml` list the landing only (the
+`/notify/` pages are `noindex`).
+
+`public/og.png` (1200x630) is rendered from `design/og-image.svg`, which embeds `public/falconer.svg`. The SVG uses
+Inter Tight and JetBrains Mono; point fontconfig at the woff2 files in `node_modules/@fontsource*` and run
+`rsvg-convert -w 1200 -h 630 design/og-image.svg -o public/og.png`.
+
+## Performance and CSP
+
+CSS is inlined into each page and scripts are always external files (`astro.config.mjs`), so the CSP keeps
+`script-src 'self'` with no hashes; `style-src` allows `'unsafe-inline'` for the inlined CSS and the swatch `style`
+attributes. Do not add inline `<script>` or third-party origins without updating `vercel.json`. The hero canvas
+reuses its buffers, rebuilds the falcon mask only when it changes, and stops (with the hero's CSS animations) while
+off screen, in a hidden tab, or with `prefers-reduced-motion`.
 
 ## Notifications PWA (/notify/)
 

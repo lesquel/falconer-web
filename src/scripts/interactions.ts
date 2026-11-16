@@ -51,7 +51,8 @@ const finePointer = hasDom && window.matchMedia('(pointer: fine)').matches;
 
 function initPointerEffects(): void {
   if (reduceMotion) return;
-  const root = document.documentElement;
+  // The spotlight variables live on the backdrop itself: setting them on <html> would restyle the whole page.
+  const root = document.querySelector<HTMLElement>('[data-spotlight]') ?? document.documentElement;
   const phone = document.querySelector<HTMLElement>('[data-tilt]');
   const eyes = document.querySelector<SVGGElement>('[data-falcon] [data-pupils]');
   let frame = 0;

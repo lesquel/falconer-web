@@ -20,6 +20,19 @@ export function statusLine(cols: number, time: string): string {
   return (left + ' '.repeat(gap) + right).slice(0, cols).padEnd(cols);
 }
 
+/** Whether the hero animates: on screen, in a visible tab and with motion allowed. */
+export function shouldAnimate(s: { onScreen: boolean; tabHidden: boolean; reduceMotion: boolean }): boolean {
+  return s.onScreen && !s.tabHidden && !s.reduceMotion;
+}
+
+/**
+ * Everything that shapes the falcon mask. While it stays the same the last mask is reused, so an
+ * idle hero skips the offscreen redraw and its getImageData. `look`: 0 ahead, 1 cursor, 2 notification.
+ */
+export function maskSignature(m: { cols: number; rows: number; rise: number; look: 0 | 1 | 2; pointerT: number; red: boolean }): string {
+  return `${m.cols}x${m.rows}|${m.rise}|${m.look}|${m.look === 1 ? m.pointerT : ''}|${m.red ? 1 : 0}`;
+}
+
 /** Ease-out with a small overshoot: the falcon rises onto its perch. */
 export function easeOutBack(t: number): number {
   const x = Math.min(1, Math.max(0, t));
@@ -40,6 +53,11 @@ const BOOT: Line[] = [['$ ssh tu-pc', 1], ['Conectado por Tailscale · 100.•�
 const TABS = [' 1 claude · api-pagos', ' 2 codex · landing', ' 3 gemini · docs'];
 const RAMP = ' .:-=+*#%@';
 const SCRAMBLE = '#%&@*+=~$/<>';
+const codes = (s: string) => Uint16Array.from(s, (c) => c.charCodeAt(0));
+const RAMP_C = codes(RAMP);
+const SCRAMBLE_C = codes(SCRAMBLE);
+const SPACE = 32, AT = 64, EQ = 61;
+const LOOK_MS = 2500;
 
 /** Path data of public/falconer.svg (100x100 viewBox), reused to draw the falcon in glyphs. */
 const FALCON = {
@@ -62,6 +80,7 @@ const EVENTS: Array<Ask | Done> = [
 
 const pick = (): Line => CORPUS[(Math.random() * CORPUS.length) | 0];
 const noise = () => SCRAMBLE[(Math.random() * SCRAMBLE.length) | 0];
+const noiseCode = () => SCRAMBLE_C[(Math.random() * SCRAMBLE_C.length) | 0];
 const hhmm = () => { const d = new Date(); return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; };
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
 
@@ -72,13 +91,26 @@ export function initFalconField(hero: HTMLElement): void {
   if (!cv || !notif || !ctx) return;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let accent = '#6b93ff';
-  const colors = () => ['#24242c', '#474752', '#8b8b95', '#f5f5f7', accent];
-  const readAccent = () => { accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || accent; };
+  // Five color buckets; the last one is the accent.
+  const palette = ['#24242c', '#474752', '#8b8b95', '#f5f5f7', accent];
+  const readAccent = () => {
+    accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || accent;
+    palette[4] = accent;
+  };
   readAccent();
 
   let W = 0, H = 0, cw = 8, ch = 17, cols = 0, rows = 0, panes = 1, paneW = 0, frame = 0, flash = 0, blink = 0;
   let heat = new Float32Array(0), bright = new Float32Array(0), accm = new Uint8Array(0), clr = new Uint8Array(0);
   let lines: Line[][] = [];
+  // Per-frame scratch, sized in layout(): one char-code row per color bucket, plus the composed
+  // text rows, cached until a line, the cursor blink or the clock changes (textVer / clock).
+  let rowCodes: Uint16Array[] = [], rowStr: string[] = [], rowBucket = new Uint8Array(0);
+  // First and last non-space column per bucket: only that span is drawn (leading and trailing
+  // spaces cost text shaping and draw nothing).
+  const lo = new Int32Array(5), hi = new Int32Array(5);
+  const bufs: string[][] = [[], [], [], [], []];
+  const bufX: number[][] = [[], [], [], [], []];
+  let textVer = 0, rowsVer = -1, clock = '', rowsClock = '', maskKey = '';
   const pulses: Array<{ x: number; y: number; t: number; v: number }> = [];
   const parts: Array<{ x: number; y: number; vx: number; vy: number; life: number; ch: string; acc: boolean }> = [];
   const pointer = { x: 0, y: 0, t: -1e9 };
@@ -100,6 +132,12 @@ export function initFalconField(hero: HTMLElement): void {
     paneW = Math.floor((cols - (panes - 1)) / panes);
     heat = new Float32Array(cols * rows);
     lines = Array.from({ length: panes }, () => Array.from({ length: rows }, (): Line => ['', 0]));
+    rowCodes = Array.from({ length: 5 }, () => new Uint16Array(cols));
+    rowStr = new Array<string>(rows).fill('');
+    rowBucket = new Uint8Array(cols * rows);
+    for (const b of bufs) b.length = rows;
+    for (const b of bufX) b.length = rows;
+    textVer++;
   }
 
   function riseNow(now: number): number {
@@ -142,7 +180,7 @@ export function initFalconField(hero: HTMLElement): void {
     };
     // The falcon looks at the cursor if it moved lately, else at the notification, else ahead.
     let tx = 0, ty = 0, look = false;
-    if (now - pointer.t < 2500) { tx = pointer.x; ty = pointer.y * k; look = true; }
+    if (now - pointer.t < LOOK_MS) { tx = pointer.x; ty = pointer.y * k; look = true; }
     else if (notif!.classList.contains('show')) { tx = cols * 0.5; ty = 0; look = true; }
     o.setTransform(1, 0, 0, 1, 0, 0);
     o.clearRect(0, 0, oc.width, oc.height);
@@ -182,32 +220,50 @@ export function initFalconField(hero: HTMLElement): void {
     }
   }
 
-  function rowText(r: number): [string, number | number[]] {
+  /** Composes text row `r` into rowStr and its color buckets into rowBucket. */
+  function fillRow(r: number) {
+    const o0 = r * cols;
+    rowBucket.fill(0, o0, o0 + cols);
     if (r === 0) {
       let t = '';
       for (let p = 0; p < panes; p++) { t += (TABS[p] ?? '').padEnd(paneW).slice(0, paneW); if (p < panes - 1) t += '│'; }
-      return [t, 1];
+      rowStr[r] = t; rowBucket.fill(1, o0, o0 + cols);
+      return;
     }
     if (r === rows - 1) {
-      const st = statusLine(cols, hhmm());
-      return [st, Array.from(st, (_, j) => (j >= 1 && j <= 11 ? 4 : 2))];
+      const st = statusLine(cols, clock);
+      rowStr[r] = st;
+      for (let j = 0; j < cols; j++) rowBucket[o0 + j] = j >= 1 && j <= 11 ? 4 : 2;
+      return;
     }
-    let s = ''; const b: number[] = [];
+    let s = '', j = 0;
     for (let q = 0; q < panes; q++) {
       const ln: Line = r === rows - 2 && q === 0 ? [`~/api-pagos $ ${blink % 2 ? '█' : ' '}`, 1] : lines[q][r];
       s += ln[0].padEnd(paneW).slice(0, paneW);
-      for (let j = 0; j < paneW; j++) b.push(ln[1]);
-      if (q < panes - 1) { s += '│'; b.push(0); }
+      rowBucket.fill(ln[1], o0 + j, Math.min(o0 + cols, o0 + j + paneW)); j += paneW;
+      if (q < panes - 1) { s += '│'; j++; }
     }
-    return [s, b];
+    rowStr[r] = s;
+  }
+
+  function refreshRows() {
+    if (rowsVer === textVer && rowsClock === clock) return;
+    if (rowsVer === textVer) { fillRow(rows - 1); } else { for (let r = 0; r < rows; r++) fillRow(r); }
+    rowsVer = textVer; rowsClock = clock;
+  }
+
+  function maskNow(now: number) {
+    const look = now - pointer.t < LOOK_MS ? 1 : notif!.classList.contains('show') ? 2 : 0;
+    const key = maskSignature({ cols, rows, rise: riseNow(now), look, pointerT: pointer.t, red: flash > 0 && flash % 4 < 2 });
+    if (key !== maskKey) { maskKey = key; buildMask(now); }
   }
 
   function draw() {
     const now = performance.now();
     frame++;
-    if (frame % 15 === 0) readAccent();
-    if (frame % 2 === 0 || now - riseT0 < 1300 || bounce || flash > 0) buildMask(now);
-    const palette = colors();
+    if (reduce || frame % 15 === 0) { readAccent(); clock = hhmm(); }
+    maskNow(now);
+    refreshRows();
     ctx!.fillStyle = '#050507'; ctx!.fillRect(0, 0, W, H);
     ctx!.fillStyle = '#101016'; ctx!.fillRect(0, (rows - 1) * ch - 2, W, ch + 4);
     for (let pi = pulses.length - 1; pi >= 0; pi--) {
@@ -218,33 +274,38 @@ export function initFalconField(hero: HTMLElement): void {
         if (Math.abs(dd - rad) < 2.4) heat[rr * cols + cc] = P.v;
       }
     }
-    const bufs: string[][] = [[], [], [], [], []];
-    const out: string[][] = [[], [], [], [], []];
     for (let r = 0; r < rows; r++) {
-      const [s, bb] = rowText(r);
-      const bar = r === rows - 1;
+      const s = rowStr[r], sl = s.length, bar = r === rows - 1;
+      for (let b = 0; b < 5; b++) { rowCodes[b].fill(SPACE); lo[b] = cols; hi[b] = -1; }
       for (let c = 0; c < cols; c++) {
         const i = r * cols + c, h = heat[i], br = bright[i];
-        let chr = s[c] ?? ' ', bucket = typeof bb === 'number' ? bb : (bb[c] ?? 0);
+        let code = c < sl ? s.charCodeAt(c) : SPACE, bucket = rowBucket[i];
         if (h > 0.08 && !bar) {
-          chr = noise(); bucket = h > 0.45 ? 4 : 2; heat[i] = h * 0.92;
+          code = noiseCode(); bucket = h > 0.45 ? 4 : 2; heat[i] = h * 0.92;
         } else {
           if (h) heat[i] = 0;
           if (bar) { /* status bar stays as is */ }
-          else if (accm[i] === 2) { chr = '@'; bucket = 4; }
-          else if (accm[i] === 1) { chr = '='; bucket = 4; }
+          else if (accm[i] === 2) { code = AT; bucket = 4; }
+          else if (accm[i] === 1) { code = EQ; bucket = 4; }
           else if (br > 0.06) {
-            chr = RAMP[Math.max(1, Math.min(RAMP.length - 1, Math.round(br * (RAMP.length - 1))))];
+            code = RAMP_C[Math.max(1, Math.min(RAMP_C.length - 1, Math.round(br * (RAMP_C.length - 1))))];
             bucket = br > 0.62 ? 3 : br > 0.3 ? 2 : 1;
-          } else if (clr[i]) chr = ' ';
+          } else if (clr[i]) code = SPACE;
         }
-        for (let bI = 0; bI < 5; bI++) out[bI][c] = bI === bucket ? chr : ' ';
+        if (code !== SPACE) {
+          rowCodes[bucket][c] = code;
+          if (c < lo[bucket]) lo[bucket] = c;
+          hi[bucket] = c;
+        }
       }
-      for (let bJ = 0; bJ < 5; bJ++) { out[bJ].length = cols; bufs[bJ].push(out[bJ].join('')); }
+      for (let b = 0; b < 5; b++) {
+        bufs[b][r] = hi[b] < 0 ? '' : String.fromCharCode.apply(null, rowCodes[b].subarray(lo[b], hi[b] + 1) as unknown as number[]);
+        bufX[b][r] = lo[b] * cw;
+      }
     }
     for (let k2 = 0; k2 < 5; k2++) {
       ctx!.fillStyle = palette[k2];
-      for (let r2 = 0; r2 < rows; r2++) if (bufs[k2][r2].trim()) ctx!.fillText(bufs[k2][r2], 0, r2 * ch);
+      for (let r2 = 0; r2 < rows; r2++) if (bufs[k2][r2]) ctx!.fillText(bufs[k2][r2], bufX[k2][r2], r2 * ch);
     }
     for (let n = parts.length - 1; n >= 0; n--) {
       const p = parts[n];
@@ -285,6 +346,7 @@ export function initFalconField(hero: HTMLElement): void {
     const pane = p < panes ? p : 0;
     const a = lines[pane]; a.splice(1, 1);
     a.splice(pane === 0 ? rows - 3 : rows - 2, 0, [t, b]);
+    textVer++;
   }
 
   let running = false, visible = true, last = 0;
@@ -294,8 +356,10 @@ export function initFalconField(hero: HTMLElement): void {
     requestAnimationFrame(loop);
   };
   const setRun = () => {
-    const want = visible && !document.hidden && !reduce;
+    const want = shouldAnimate({ onScreen: visible, tabHidden: document.hidden, reduceMotion: reduce });
     if (want && !running) { running = true; requestAnimationFrame(loop); } else if (!want) running = false;
+    // CSS animations inside the hero (live dot, swipe shine) stop with the canvas.
+    hero.toggleAttribute('data-paused', !want);
   };
   new IntersectionObserver((en) => { visible = en[0].isIntersecting; setRun(); }).observe(hero);
   document.addEventListener('visibilitychange', setRun);
@@ -404,12 +468,13 @@ export function initFalconField(hero: HTMLElement): void {
   }
 
   function start() {
+    clock = hhmm();
     layout(); buildMask(performance.now()); draw(); setRun();
     if (!reduce) hero.querySelectorAll<HTMLElement>('[data-decode]').forEach((el, n) => decode(el, 150 + n * 300));
     bootSequence(() => {
       riseT0 = performance.now();
       [900, 1300, 1700].forEach((ms, p) => setInterval(() => { if (p < panes && running) pushLine(p, Math.random() < 0.15 ? '' : pick()[0], 0); }, ms));
-      setInterval(() => { blink++; }, 530);
+      setInterval(() => { blink++; textVer++; }, 530);
       if (reduce) { buildMask(riseT0); draw(); }
       setTimeout(show, reduce ? 300 : 1500);
     });

@@ -1,4 +1,4 @@
-/* OpenMosh notifications service worker (scope: /notify/). */
+/* Falconer notifications service worker (scope: /notify/). */
 importScripts('/notify-sw-lib.js');
 
 self.addEventListener('install', function () {

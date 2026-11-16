@@ -1,6 +1,6 @@
 // Pure helpers shared by notify-sw.js (loaded with importScripts) and the unit tests.
 (function (root) {
-  var FALLBACK_TITLE = 'OpenMosh';
+  var FALLBACK_TITLE = 'Falconer';
 
   /** Parses a decrypted push payload. Never throws; always yields something showable. */
   function parsePush(text) {

@@ -1,29 +1,29 @@
 ---
 /**
- * "Topo Cava" hero: a living Herdr session on one canvas, Topo drawn in terminal glyphs,
- * and a push notification the visitor approves by sliding (see scripts/topo-field.ts).
+ * "Falcon Field" hero: a living Herdr session on one canvas, the falcon drawn in terminal
+ * glyphs, and a push notification the visitor approves by sliding (see scripts/falcon-field.ts).
  */
 import '@fontsource-variable/archivo/wdth.css';
 import InstallCommand from './InstallCommand.astro';
 ---
 
-<section class="hero" aria-labelledby="hero-title" data-topo>
-  <canvas data-topo-canvas aria-hidden="true"></canvas>
-  <div class="notif" data-topo-notif role="status" aria-live="polite"></div>
+<section class="hero" aria-labelledby="hero-title" data-falcon-hero>
+  <canvas data-falcon-canvas aria-hidden="true"></canvas>
+  <div class="notif" data-falcon-notif role="status" aria-live="polite"></div>
 
-  <div class="wrap copy" data-topo-copy>
-    <p class="badge mono"><i aria-hidden="true"></i><b>OpenMosh v0.2.0</b> gratis · código abierto</p>
+  <div class="wrap copy" data-falcon-copy>
+    <p class="badge mono"><i aria-hidden="true"></i><b>Falconer v0.2.0</b> gratis · código abierto</p>
     <h1 id="hero-title" aria-label="Tu agente trabaja. Vos vivís.">
       <span data-decode data-text="Tu agente trabaja." aria-hidden="true">Tu agente trabaja.</span>
       <span class="l2" data-decode data-text="Vos vivís." aria-hidden="true">Vos vivís.</span>
     </h1>
     <p class="lead">
-      OpenMosh te avisa en el teléfono cuando <b>Claude Code, Codex</b> o cualquier agente termina o
+      Falconer te avisa en el teléfono cuando <b>Claude Code, Codex</b> o cualquier agente termina o
       pide permiso. Aprobás con un dedo, o abrís la terminal completa y seguís desde ahí. Todo viaja
       cifrado entre tus aparatos.
     </p>
     <div class="actions" id="instalar">
-      <a href="https://github.com/lesquel/openmosh-app/releases/latest" class="btn primary">
+      <a href="https://github.com/lesquel/falconer-app/releases/latest" class="btn primary">
         Descargar para Android <small class="mono">15,5 MB</small>
       </a>
       <InstallCommand />
@@ -35,18 +35,18 @@ import InstallCommand from './InstallCommand.astro';
     </ul>
   </div>
 
-  <p class="hint mono" data-topo-hint>Pasá el mouse: Topo cava · <kbd>Enter</kbd> en la notificación aprueba</p>
+  <p class="hint mono" data-falcon-hint>Pasá el mouse: el halcón vuela · <kbd>Enter</kbd> en la notificación aprueba</p>
 </section>
 
 <script>
-  import { initTopoField } from '../scripts/topo-field';
-  const hero = document.querySelector<HTMLElement>('[data-topo]');
+  import { initFalconField } from '../scripts/falcon-field';
+  const hero = document.querySelector<HTMLElement>('[data-falcon-hero]');
   if (hero) {
     if (matchMedia('(hover: none)').matches) {
-      const hint = hero.querySelector('[data-topo-hint]');
-      if (hint) hint.textContent = 'Tocá la terminal: Topo cava';
+      const hint = hero.querySelector('[data-falcon-hint]');
+      if (hint) hint.textContent = 'Tocá la terminal: el halcón vuela';
     }
-    initTopoField(hero);
+    initFalconField(hero);
   }
 </script>
 

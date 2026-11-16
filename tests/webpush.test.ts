@@ -71,10 +71,10 @@ describe('service worker helpers', () => {
     expect(p).toEqual({ kind: 'approval', title: 'T', body: 'B', url: 'openmosh:///inbox' });
   });
   it('falls back to a showable notification on bad payloads', () => {
-    expect(parsePush('not json').title).toBe('OpenMosh');
-    expect(parsePush('').title).toBe('OpenMosh');
-    expect(parsePush('null').title).toBe('OpenMosh');
-    expect(parsePush('{"title":42}').title).toBe('OpenMosh');
+    expect(parsePush('not json').title).toBe('Falconer');
+    expect(parsePush('').title).toBe('Falconer');
+    expect(parsePush('null').title).toBe('Falconer');
+    expect(parsePush('{"title":42}').title).toBe('Falconer');
   });
   it('builds the open-page path', () => {
     expect(openPath('openmosh:///inbox')).toBe('/notify/open/?to=openmosh%3A%2F%2F%2Finbox');

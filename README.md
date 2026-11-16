@@ -1,6 +1,6 @@
-# openmosh-web
+# falconer-web
 
-Landing page of [OpenMosh](https://github.com/lesquel/OpenMosh), built with [Astro](https://astro.build).
+Landing page of [Falconer](https://github.com/lesquel/falconer), built with [Astro](https://astro.build).
 Static output, self-hosted fonts, no analytics and no third-party requests.
 
 ## Develop
@@ -19,23 +19,24 @@ npm run preview  # serve dist/ locally
 | Path | Content |
 |---|---|
 | `src/pages/index.astro` | The page: composes the sections in order |
-| `src/components/` | Header (nav + AccentPicker), Hero (copy + Showcase phone and mole, InstallCommand), Marquee, About, Problem, Steps (+ ApproveDemo), Bento (features), Agents, Security, Compare, Creator, OpenSource, Faq, FinalCta, Footer, Mole |
+| `src/components/` | Header (nav + AccentPicker), Hero (copy + falcon glyph field on a live terminal, InstallCommand), Marquee, About, Problem, Steps (+ ApproveDemo), Bento (features), Agents, Security, Compare, Creator, OpenSource, Faq, FinalCta, Footer, Falcon |
+| `src/scripts/falcon-field.ts` | Hero canvas: Herdr-like session, the falcon in terminal glyphs, the swipe-to-approve notification |
 | `src/scripts/motion.ts` | Pure helpers (tilt, pupils, accent whitelist), unit-tested |
-| `src/scripts/interactions.ts` | Pointer spotlight, 3D tilt, mole eyes, copy buttons, tab demo, remembered accent, approve demo; pure parts exported and unit-tested |
+| `src/scripts/interactions.ts` | Pointer spotlight, 3D tilt, falcon eye, copy buttons, tab demo, remembered accent, approve demo; pure parts exported and unit-tested |
 | `src/styles/global.css` | Tokens and keyframes; animations stop with `prefers-reduced-motion` |
 
-The design is "LAN-J · Spotlight" from the OpenMosh design canvas.
+The design is "LAN-J · Spotlight" from the Falconer (formerly OpenMosh) design canvas.
 
 ## Notifications PWA (/notify/)
 
-`/notify/` is an installable Home-Screen web app that receives Web Push for OpenMosh. iOS cannot use APNs without a
+`/notify/` is an installable Home-Screen web app that receives Web Push for Falconer. iOS cannot use APNs without a
 paid Apple account, so the phone gets pushes through the browser's own push service instead (iOS 16.4+ Safari, or
-Android Chrome). It makes its own VAPID key pair and push subscription, then hands both to the OpenMosh app, which
-forwards them over SSH to `openmosh-hook`. Pushes are RFC 8291 (`aes128gcm`) encrypted and generic (no commands or
+Android Chrome). It makes its own VAPID key pair and push subscription, then hands both to the Falconer app, which
+forwards them over SSH to the hook (`falconer-hook`). Pushes are RFC 8291 (`aes128gcm`) encrypted and generic (no commands or
 hostnames). No third-party requests are added.
 
 **iOS steps:** open `/notify/` in Safari, Share, Add to Home Screen, open it from the new icon, tap
-"Enable notifications", then "Open in OpenMosh" (or "Copy code" and paste it in the app).
+"Enable notifications", then "Open in Falconer" (or "Copy code" and paste it in the app).
 
 **Hosting:** service workers and Push need HTTPS at the site origin (`localhost` works for development). The blob's
 `sub` field is `location.origin`.
@@ -51,3 +52,7 @@ All binary fields are base64url. **Push payload** (decrypted by the browser):
 `/notify/open/?to=<url>`, which only accepts `openmosh:///` targets and bounces into the app.
 
 Files: `src/pages/notify/`, `src/scripts/{notify,webpush}.ts`, `public/{notify-sw.js,notify-sw-lib.js,manifest.webmanifest,icons/}`.
+
+The `openmosh:///` URL scheme, the `openmosh-notify` IndexedDB name, the `openmosh-accent` storage key and the
+`OpenMoshPush` service-worker global keep the pre-rename name on purpose: the app deep links and already stored
+data depend on them.

@@ -1,4 +1,4 @@
-/* OpenMosh landing — "Spotlight" (LAN-J).
+/* Falconer landing — "Spotlight" (LAN-J).
    Dark-only by design: the page commits to one look on purpose. */
 @import '@fontsource-variable/inter-tight';
 @import '@fontsource/jetbrains-mono/400.css';
@@ -16,9 +16,6 @@
   --dim: #8b8b95; /* ≥4.5:1 on --bg and --surface */
   --accent: #6b93ff;
   --accent-soft: #c7d2fe;
-  --mole: #7a6250;
-  --mole-light: #8f7460;
-  --snout: #e9a6a6;
   --font-sans: 'Inter Tight Variable', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
   --radius: 26px;

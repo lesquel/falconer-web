@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { easeOutBack, formatCountdown, statusLine } from '../src/scripts/topo-field';
+import { easeOutBack, formatCountdown, statusLine } from '../src/scripts/falcon-field';
 
 describe('approval countdown', () => {
   it('formats minutes and zero-padded seconds', () => {

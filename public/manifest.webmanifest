@@ -1,7 +1,7 @@
 {
-  "name": "OpenMosh Notifications",
-  "short_name": "OpenMosh",
-  "description": "Receive OpenMosh push notifications on this device.",
+  "name": "Falconer Notifications",
+  "short_name": "Falconer",
+  "description": "Receive Falconer push notifications on this device.",
   "start_url": "/notify/",
   "scope": "/notify/",
   "display": "standalone",

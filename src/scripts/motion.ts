@@ -22,7 +22,7 @@ export function tilt(dx: number, dy: number): { rx: string; ry: string } {
   return { rx: `${(-unit(dy) * 8).toFixed(2)}deg`, ry: `${(unit(dx) * 10).toFixed(2)}deg` };
 }
 
-/** Pupil shift in SVG units (the goggles allow about 5). */
+/** Pupil shift in SVG units (callers pass the room their eye allows; default 5). */
 export function pupils(dx: number, dy: number, max = 5): string {
   return `translate(${(unit(dx) * max).toFixed(2)} ${(unit(dy) * max).toFixed(2)})`;
 }

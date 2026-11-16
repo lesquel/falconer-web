@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import interTight from '@fontsource-variable/inter-tight/files/inter-tight-latin-wght-normal.woff2?url';
 
 interface Props {
   title: string;
@@ -37,6 +38,7 @@ const locale = lang === 'es' ? 'es_419' : 'en_US';
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href={interTight} as="font" type="font/woff2" crossorigin />
     <slot name="head" />
     <title>{title}</title>
   </head>

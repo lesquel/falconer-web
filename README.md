@@ -36,9 +36,10 @@ The design is "LAN-J · Spotlight" from the Falconer (formerly OpenMosh) design 
 Open Graph/Twitter URLs from it. `public/robots.txt` and the static `public/sitemap.xml` list the landing only (the
 `/notify/` pages are `noindex`).
 
-`public/og.png` (1200x630) is rendered from `design/og-image.svg`, which embeds `public/falconer.svg`. The SVG uses
-Inter Tight and JetBrains Mono; point fontconfig at the woff2 files in `node_modules/@fontsource*` and run
-`rsvg-convert -w 1200 -h 630 design/og-image.svg -o public/og.png`.
+`public/og.png` (1200x630) is rendered from `design/og-image.svg` plus the falcon tile `design/falconer-512.png`.
+The SVG uses Inter Tight and JetBrains Mono; point fontconfig at the woff2 files in `node_modules/@fontsource*` and run
+`rsvg-convert -w 1200 -h 630 design/og-image.svg -o public/og.png`, then
+`magick public/og.png \( design/falconer-512.png -resize 320x320 \) -geometry +96+155 -composite public/og.png`.
 
 ## Performance and CSP
 

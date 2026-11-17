@@ -59,7 +59,7 @@ const SCRAMBLE_C = codes(SCRAMBLE);
 const SPACE = 32, AT = 64, EQ = 61;
 const LOOK_MS = 2500;
 
-/** Path data of public/falconer.svg (100x100 viewBox), reused to draw the falcon in glyphs. */
+/** Path data of the original vector falcon (100x100 viewBox), reused to draw the falcon in glyphs. */
 const FALCON = {
   light: 'M30 100 C28 82 26 66 30 54 C33 36 46 24 60 24 C70 24 77 29 80 36 L86 40 C90 43 91 49 89 54 C88 58 85 61 81 62 C82 58 82 55 80 53 C77 55 73 56 70 56 C68 66 68 80 72 100 Z',
   dark: 'M30 100 C28 82 26 66 30 54 C33 36 46 24 60 24 C70 24 77 29 80 36 L76 40 C72 38 68 38 64 40 C58 44 56 52 56 62 C56 68 52 70 49 66 C47 62 46 56 44 52 C40 58 38 70 40 100 Z',
@@ -152,7 +152,7 @@ export function initFalconField(hero: HTMLElement): void {
 
   // The falcon is drawn on a small offscreen canvas (one pixel per cell, y stretched so shapes
   // stay round) and sampled. R = brightness, G = accent (255 iris, 120 eye ring and cere),
-  // B = clear text. Its paths are the ones of public/falconer.svg (100x100 viewBox).
+  // B = clear text. Its paths are the original vector falcon (100x100 viewBox).
   const oc = document.createElement('canvas');
   const o = oc.getContext('2d', { willReadFrequently: true })!;
   const P = {

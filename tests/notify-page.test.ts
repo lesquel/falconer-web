@@ -27,7 +27,7 @@ describe('/notify/ handoff', () => {
 describe('install command', () => {
   it('offers a tag-pinned installer to read before running', () => {
     const steps = read('src/components/Steps.astro');
-    expect(steps).toContain('https://raw.githubusercontent.com/lesquel/falconer-hook/v0.2.0/install.sh');
+    expect(steps).toContain('https://raw.githubusercontent.com/lesquel/falconer-hook/v0.3.0/install.sh');
     expect(read('src/components/InstallCommand.astro')).toContain(
       'https://raw.githubusercontent.com/lesquel/falconer-hook/main/install.sh | sh',
     );

@@ -88,7 +88,7 @@ already stored data depend on them.
 
 The landing shows the one-line installer
 (`curl -fsSL https://raw.githubusercontent.com/lesquel/falconer-hook/main/install.sh | sh`) and, for people who
-read scripts before running them, the tag-pinned `v0.2.0/install.sh` to download, inspect and run. The installer
+read scripts before running them, the tag-pinned `v0.3.0/install.sh` to download, inspect and run. The installer
 itself verifies the release's checksums and minisign signature.
 
 ## Contributing and security

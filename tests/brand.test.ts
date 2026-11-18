@@ -8,7 +8,7 @@ const read = (name: string) => readFileSync(join(dir, name), 'utf8');
 describe('Falconer brand', () => {
   it('names the product Falconer in the header and the hero', () => {
     expect(read('Header.astro')).toMatch(/aria-label="Falconer, inicio"[\s\S]*falconer/);
-    expect(read('Hero.astro')).toContain('<b>Falconer v0.2.0</b>');
+    expect(read('Hero.astro')).toContain('<b>Falconer v0.3.0</b>');
     expect(read('Hero.astro')).toContain('el halcón vuela');
   });
   it('keeps no OpenMosh, Topo or mole leftovers in any component', () => {

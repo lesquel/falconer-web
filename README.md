@@ -9,7 +9,7 @@ Static output, self-hosted fonts, no analytics and no third-party requests.
 ```sh
 npm install
 npm run dev      # http://localhost:4321
-npm test         # unit tests for the pointer, accent and approve-demo helpers (vitest)
+npm test         # vitest: helpers, brand, site URL, headers and the /notify/ handoff
 npm run check    # astro check (needs @astrojs/check; it offers to install it on first run)
 npm run build    # static site in dist/
 npm run preview  # serve dist/ locally
@@ -58,12 +58,17 @@ forwards them over SSH to the hook (`falconer-hook`). Pushes are RFC 8291 (`aes1
 hostnames). No third-party requests are added.
 
 **iOS steps:** open `/notify/` in Safari, Share, Add to Home Screen, open it from the new icon, tap
-"Enable notifications", then "Open in Falconer" (or "Copy code" and paste it in the app).
+"Enable notifications", then "Copy code" and paste it in the Falconer app.
+
+**The code is a secret.** It contains this browser's VAPID private key, so anyone who has it can send
+notifications to this browser. It is only copied and pasted by hand: the page offers no deep link, and the app
+does not accept codes from links. "Reset" unsubscribes the browser and deletes its keys, which invalidates any
+leaked code.
 
 **Hosting:** service workers and Push need HTTPS at the site origin (`localhost` works for development). The blob's
 `sub` field is `location.origin`.
 
-**Registration blob** (base64url, no padding, of UTF-8 JSON), handed off as `openmosh:///webpush?d=<blob>`:
+**Registration blob** (base64url, no padding, of UTF-8 JSON), pasted into the app:
 
 ```json
 {"v":1,"endpoint":"…","p256dh":"<65 bytes>","auth":"<16 bytes>","vapid_pub":"<65 bytes>","vapid_priv":"<32 bytes d>","sub":"<origin>"}
@@ -76,5 +81,22 @@ All binary fields are base64url. **Push payload** (decrypted by the browser):
 Files: `src/pages/notify/`, `src/scripts/{notify,webpush}.ts`, `public/{notify-sw.js,notify-sw-lib.js,manifest.webmanifest,icons/}`.
 
 The `openmosh:///` URL scheme, the `openmosh-notify` IndexedDB name, the `openmosh-accent` storage key and the
-`OpenMoshPush` service-worker global keep the pre-rename name on purpose: the app deep links and already stored
-data depend on them.
+`OpenMoshPush` service-worker global keep the pre-rename name on purpose: the app's notification-tap URLs and
+already stored data depend on them.
+
+## Install command
+
+The landing shows the one-line installer
+(`curl -fsSL https://raw.githubusercontent.com/lesquel/falconer-hook/main/install.sh | sh`) and, for people who
+read scripts before running them, the tag-pinned `v0.2.0/install.sh` to download, inspect and run. The installer
+itself verifies the release's checksums and minisign signature.
+
+## Contributing and security
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md). Report vulnerabilities privately as described in
+[SECURITY.md](./SECURITY.md). The project's [Code of Conduct](https://github.com/lesquel/falconer/blob/main/CODE_OF_CONDUCT.md)
+applies to this repository.
+
+## License
+
+Pending (not chosen yet).

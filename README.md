@@ -76,7 +76,7 @@ leaked code.
 
 All binary fields are base64url. **Push payload** (decrypted by the browser):
 `{"v":1,"kind":"…","title":"…","body":"…","url":"openmosh:///inbox"}`. Tapping a notification opens
-`/notify/open/?to=<url>`, which only accepts `openmosh:///` targets and bounces into the app.
+`/notify/open/?to=<url>`, which only accepts `openmosh:///` targets and opens the app. The app ignores the path and always starts at its home screen.
 
 Files: `src/pages/notify/`, `src/scripts/{notify,webpush}.ts`, `public/{notify-sw.js,notify-sw-lib.js,manifest.webmanifest,icons/}`.
 

@@ -99,4 +99,4 @@ applies to this repository.
 
 ## License
 
-Pending (not chosen yet).
+Apache-2.0, see [LICENSE](LICENSE) and [NOTICE](NOTICE). Bundled fonts keep the SIL Open Font License 1.1.

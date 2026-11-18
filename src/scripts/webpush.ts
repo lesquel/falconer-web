@@ -63,10 +63,6 @@ export function buildBlob(input: BlobInput): string {
   return b64urlEncode(new TextEncoder().encode(JSON.stringify(buildRegistration(input))));
 }
 
-export function handoffLink(blob: string): string {
-  return `openmosh:///webpush?d=${blob}`;
-}
-
 /** The open page may only bounce into the app's own scheme. */
 export function isAllowedTarget(to: string | null | undefined): to is string {
   return typeof to === 'string' && to.startsWith(ALLOWED_PREFIX);

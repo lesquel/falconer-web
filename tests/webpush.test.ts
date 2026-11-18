@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
-  b64urlDecode, b64urlEncode, buildBlob, buildRegistration, handoffLink, isAllowedTarget, targetFromSearch,
+  b64urlDecode, b64urlEncode, buildBlob, buildRegistration, isAllowedTarget, targetFromSearch,
 } from '../src/scripts/webpush';
 
 const fill = (n: number, v: number) => new Uint8Array(n).fill(v);
@@ -39,7 +39,6 @@ describe('registration blob', () => {
     const blob = buildBlob(input);
     expect(blob).not.toMatch(/[+/=]/);
     expect(JSON.parse(new TextDecoder().decode(b64urlDecode(blob)))).toEqual(buildRegistration(input));
-    expect(handoffLink(blob)).toBe(`openmosh:///webpush?d=${blob}`);
   });
   it('rejects wrong key sizes', () => {
     expect(() => buildBlob({ ...input, auth: fill(15, 1) })).toThrow(/auth/);

@@ -1,4 +1,4 @@
-import { b64urlDecode, b64urlEncode, buildBlob, handoffLink } from './webpush';
+import { b64urlDecode, b64urlEncode, buildBlob } from './webpush';
 
 const DB_NAME = 'openmosh-notify';
 const STORE = 'keys';
@@ -82,9 +82,11 @@ async function subscriptionBlob(sub: PushSubscription, keys: StoredKeys): Promis
   });
 }
 
+/**
+ * The code carries this browser's VAPID private key, so it is only copied and pasted into the
+ * app by hand. It is never put in a link: the app does not accept codes from links.
+ */
 function showHandoff(blob: string): void {
-  const link = $<HTMLAnchorElement>('open-link');
-  link.href = handoffLink(blob);
   $<HTMLElement>('code-box').dataset.blob = blob;
   show('ready');
 }

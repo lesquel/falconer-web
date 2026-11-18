@@ -1,6 +1,9 @@
 ---
 import InstallCommand from './InstallCommand.astro';
 import ApproveDemo from './ApproveDemo.astro';
+
+/** Tag-pinned installer, for people who read the script before running it. */
+const PINNED_INSTALLER = 'https://raw.githubusercontent.com/lesquel/falconer-hook/v0.2.0/install.sh';
 ---
 
 <section class="wrap section" id="como-funciona" aria-labelledby="pasos-title">
@@ -19,6 +22,15 @@ import ApproveDemo from './ApproveDemo.astro';
             <InstallCommand />
             <InstallCommand command="falconer-hook setup" label="Copiar el comando de configuración" />
           </div>
+          <details class="verify">
+            <summary>¿Preferís revisarlo antes?</summary>
+            <p>Bajá el instalador de la versión fija, leelo y recién después ejecutalo:</p>
+            <div class="cmds">
+              <InstallCommand command={`curl -fsSLO ${PINNED_INSTALLER}`} label="Copiar el comando de descarga" />
+              <InstallCommand command="less install.sh" label="Copiar el comando para leer el instalador" />
+              <InstallCommand command="sh install.sh" label="Copiar el comando para ejecutar el instalador" />
+            </div>
+          </details>
         </div>
       </li>
       <li class="card">
@@ -48,5 +60,8 @@ import ApproveDemo from './ApproveDemo.astro';
   .steps li > div { min-width: 0; flex: 1; }
   @media (max-width: 520px) { .steps li { flex-direction: column; gap: 8px; } }
   .num { font-size: 14px; color: var(--accent); padding-top: 4px; }
+  .verify { margin-top: 14px; color: var(--muted); font-size: 15px; }
+  .verify summary { cursor: pointer; color: var(--fg); }
+  .verify p { margin: 8px 0 0; }
   .cmds { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; align-items: flex-start; }
 </style>

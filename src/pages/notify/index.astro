@@ -56,7 +56,7 @@ import Base from '../../layouts/Base.astro';
 
     <section class="card" data-view="enable" hidden>
       <h3>Turn on notifications</h3>
-      <p>Your browser will ask for permission. Then you hand the result to the Falconer app.</p>
+      <p>Your browser will ask for permission. Then you copy a code into the Falconer app.</p>
       <p class="actions"><button class="btn primary" id="enable-btn" type="button">Enable notifications</button></p>
     </section>
 
@@ -70,15 +70,15 @@ import Base from '../../layouts/Base.astro';
 
     <section class="card" data-view="ready" hidden id="code-box">
       <h3>Ready</h3>
-      <p class="actions">
-        <a class="btn primary" id="open-link" href="#">Open in Falconer</a>
-        <button class="btn" id="copy-btn" type="button">Copy code</button>
-      </p>
-      <p>Then open Falconer → it sends this to your paired computers.</p>
-      <p class="hint">If the button doesn't open the app, tap "Copy code" and paste it in Falconer.</p>
+      <p>Copy the code, then open the Falconer app and paste it there. The app shows where it will send it before you confirm.</p>
+      <p class="actions"><button class="btn primary" id="copy-btn" type="button">Copy code</button></p>
       <textarea id="code-fallback" class="mono" rows="4" readonly hidden></textarea>
+      <p class="warn">
+        <b>Keep this code secret.</b> Anyone who has it can send notifications to this browser. Paste it only in the
+        Falconer app, never in a chat or a website. If it leaks, tap <b>Reset</b> below to make a new one.
+      </p>
       <p class="actions"><button class="btn" id="reset-btn" type="button">Reset</button></p>
-      <p class="hint">Reset unsubscribes this device and deletes its keys.</p>
+      <p class="hint">Reset unsubscribes this device and deletes its keys; the old code stops working.</p>
     </section>
 
     <section class="card" data-view="error" hidden><h3>Something went wrong</h3><p id="error-text"></p></section>
@@ -100,6 +100,8 @@ import Base from '../../layouts/Base.astro';
   .card[hidden], [data-view][hidden] { display: none; }
   .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px !important; }
   .hint { font-size: 14px; color: var(--dim) !important; margin-top: 12px !important; }
+  .warn { font-size: 14px; margin-top: 16px !important; padding: 12px 14px; border-radius: 12px;
+    border: 1px solid var(--line-strong); background: var(--raised); }
   .privacy { font-size: 14px; color: var(--dim); margin: 0; }
   .steps { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-direction: column; gap: 14px; counter-reset: s; }
   .steps li { display: flex; align-items: center; gap: 14px; color: var(--muted); }
